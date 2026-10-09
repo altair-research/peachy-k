@@ -1,0 +1,41 @@
+// UI strings. To add a language: add a block with the same keys and a BCP-47 `speech` code
+// (used for the browser's text-to-speech voice). Game content uses bilingual {en, ko} objects
+// in games-*.js; a missing language falls back to English.
+const I18N = {
+  en: {
+    speech: 'en-US', switchTo: '한국어',
+    app: 'Peachy K', tagline: 'Georgia Kindergarten Games',
+    pick: 'Pick a game!',
+    subjects: { math: 'Math', read: 'Reading', ss: 'Georgia & Our Nation', sci: 'Science' },
+    right: ['Great job!', 'Awesome!', 'You did it!', 'Super!', 'Peachy!'],
+    again: 'Try again!', next: 'Next ▶', listen: 'Listen',
+    grownups: 'For grown-ups', back: 'Back',
+    colGame: 'Game', colArea: 'School area', colRight: 'Right', colMiss: 'Missed', colLevel: 'Level',
+    focus: 'Needs a little more practice:', focusNone: 'Play a few rounds to see suggestions.',
+    addrTitle: 'My address (saved only on this device)', street: 'Street address', city: 'City',
+    save: 'Save', saved: 'Saved!', reset: 'Erase progress', resetAsk: 'Erase all progress on this device?',
+    basket: 'baskets', note: 'Made for Georgia kindergarten topics. Not affiliated with Gwinnett County Public Schools. No ads. No data leaves this device.',
+    tensAsk: 'Which number is missing?',
+    fillAsk: 'Tap the empty boxes to make ten!',
+    pair: (a, b) => `${a} and ${b} make ten!`,
+    countAsk: 'Tap each one to count. How many are there?'
+  },
+  ko: {
+    speech: 'ko-KR', switchTo: 'English',
+    app: '피치 K', tagline: '조지아 유치원(K) 학습 게임',
+    pick: '게임을 골라요!',
+    subjects: { math: '수학', read: '읽기', ss: '조지아와 우리나라', sci: '과학' },
+    right: ['잘했어요!', '멋져요!', '해냈어요!', '최고예요!', '피치 좋아요!'],
+    again: '다시 해 봐요!', next: '다음 ▶', listen: '듣기',
+    grownups: '보호자용', back: '뒤로',
+    colGame: '게임', colArea: '학교 영역', colRight: '정답', colMiss: '오답', colLevel: '단계',
+    focus: '조금 더 연습하면 좋아요:', focusNone: '몇 판 하면 추천이 나와요.',
+    addrTitle: '우리 집 주소 (이 기기에만 저장)', street: '번지/도로명 주소', city: '도시',
+    save: '저장', saved: '저장됐어요!', reset: '기록 지우기', resetAsk: '이 기기의 모든 기록을 지울까요?',
+    basket: '바구니', note: '조지아 유치원 학습 주제에 맞춘 게임입니다. Gwinnett County Public Schools와 관련이 없습니다. 광고 없음. 데이터는 기기 밖으로 나가지 않습니다.',
+    tensAsk: '빠진 숫자는 뭘까요?',
+    fillAsk: '빈 칸을 눌러서 10을 만들어요!',
+    pair: (a, b) => `${a}와 ${b}를 합치면 십!`,
+    countAsk: '하나씩 눌러서 세어 봐요. 모두 몇 개일까요?'
+  }
+};
