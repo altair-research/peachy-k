@@ -97,7 +97,7 @@ function picksScreen(fromQuiz) {
     <p class="tag">${fromQuiz ? T().quizDone : T().reportDone}</p>
     <div class="menu">${picks.map(p => { const g = gameById(p.id); return `<button class="big ${g.subject} pick" data-id="${g.id}"><span class="gi">${g.icon}</span>${L(g.title)}<small>${whyText(p)}</small></button>`; }).join('') || `<p>${T().noPicks}</p>`}</div>
     <button class="next" id="home">${T().letsPlay}</button>`;
-  $$('.pick').forEach(b => b.onclick = () => gameById(b.dataset.id).play());
+  $$('.pick').forEach(b => b.onclick = () => launch(gameById(b.dataset.id)));
   $('#home').onclick = home;
 }
 function whyText(p) {

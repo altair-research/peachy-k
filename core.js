@@ -39,16 +39,51 @@ function addPeach() { S.peaches++; save(); renderPeaches(); }
 // 4 clean answers in a row -> level up (max 2); every 3rd miss -> level down.
 function record(id, ok) {
   const s = stat(id);
+  if (SESSION.id === id) { SESSION.done = (SESSION.done || 0) + (ok ? 1 : 0); }
   if (ok) { s.right++; s.streak++; if (s.streak >= 4 && s.level < 2) { s.level++; s.streak = 0; } }
   else { s.wrong++; s.streak = 0; if (s.level > 1 && s.wrong % 3 === 0) s.level--; }
   save();
 }
 
+// A play session = a few rounds of one game (or a mixed run), so rounds never repeat endlessly.
+const ROUNDS = 6;
+const SESSION = { id: null, n: 0, mix: false, done: 0 };
+const recent = {};                                   // per game: keys of the last rounds, to avoid repeats
+// true if this round's key was seen in the last rounds (caller should regenerate); gives up after 8 tries
+function dup(game, key) {
+  const r = (recent[game.id] = recent[game.id] || []); game._tries = game._tries || 0;
+  if (r.includes(key) && game._tries < 8) { game._tries++; return true; }
+  game._tries = 0; r.push(key); if (r.length > 5) r.shift(); return false;
+}
+function launch(game, mix) {
+  Object.assign(SESSION, { id: game.id, n: 0, mix: !!mix, done: 0, rounds: mix ? 2 : ROUNDS });
+  game.play();
+}
+function surprise() {                                // mixed run: different game every couple of rounds
+  const picks = (typeof currentPicks === 'function' ? currentPicks(3) : []).map(p => p.id);
+  const pool = GAMES.filter(g => g.id !== SESSION.id && !(SESSION.hist || []).slice(-4).includes(g.id));
+  const g = (picks.length && rnd(2) === 0 ? GAMES.find(x => x.id === pick(picks)) : null) || pick(pool);
+  SESSION.hist = [...(SESSION.hist || []), g.id]; launch(g, true);
+}
+function sessionEnd(game) {
+  const t = T(), good = SESSION.done;
+  view().innerHTML = `<h1>🎉 ${t.roundDone}</h1><p class="tag">${t.gotRight(good, SESSION.rounds)}</p>
+    <div class="menu intro"><button class="big math" id="again"><span class="gi">🔁</span>${t.playAgain}</button>
+    <button class="big read" id="mixbtn"><span class="gi">🎲</span>${t.surprise}</button>
+    <button class="big ss" id="goHome"><span class="gi">🏠</span>${t.pickAnother}</button></div>`;
+  $('#again').onclick = () => launch(game); $('#mixbtn').onclick = surprise; $('#goHome').onclick = home;
+  say(t.roundDone);
+}
 function nextButton(fn) {
   setTimeout(() => {
     const c = $('#cheer'); if (!c) return;
     c.insertAdjacentHTML('afterend', `<button class="next" id="nx">${T().next}</button>`);
-    $('#nx').onclick = fn;
+    $('#nx').onclick = () => {
+      SESSION.n++;
+      const g = GAMES.find(x => x.id === SESSION.id);
+      if (!g || SESSION.n < SESSION.rounds) return fn();
+      return SESSION.mix ? surprise() : sessionEnd(g);
+    };
   }, 900);
 }
 
@@ -56,6 +91,8 @@ function nextButton(fn) {
 // item: { ask, show?, opts:[{html,label?,ok?}], after?, vocab?, onRender?, onCorrect?, cls? }
 function quiz(game, item) {
   const askText = L(item.ask);
+  const key = askText + '|' + (item.show || '').replace(/style="[^"]*"/g, '') + '|' + item.opts.map(o => o.html + (o.ok ? '*' : '')).sort().join(',');
+  if (!DIAG.active && dup(game, key)) return game.play();
   const opts = shuffle(item.opts);
   view().innerHTML = `
     <div class="prompt">${askText}<button class="say" id="sp" aria-label="${T().listen}">🔊</button></div>

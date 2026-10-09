@@ -10,6 +10,7 @@ function home() {
   view().innerHTML = `
     <h1>🍑 ${T().app}</h1>
     <div class="tag">${T().tagline}</div>
+    <button class="big surprise" id="surprise"><span class="gi">🎲</span>${T().surprise}</button>
     ${picksHtml()}
     ${SUBJECT_ORDER.map(sub => `
       <section class="subj ${sub}"><h2>${SUBJECT_ICON[sub]} ${T().subjects[sub]}</h2>
@@ -18,9 +19,10 @@ function home() {
     <button class="link" id="find">${T().findStart}</button>
     <button class="link" id="parent">${T().grownups}</button>
     <p class="note">${T().note}</p>`;
-  $$('.big').forEach(b => b.onclick = () => GAMES.find(g => g.id === b.dataset.id).play());
+  $$('.big').forEach(b => b.onclick = () => launch(GAMES.find(g => g.id === b.dataset.id)));
   $('#parent').onclick = grownups; $('#find').onclick = intro;
-  $$('.pick').forEach(b => b.onclick = () => gameById(b.dataset.id).play());
+  $$('.pick').forEach(b => b.onclick = () => launch(gameById(b.dataset.id)));
+  $('#surprise').onclick = surprise;
 }
 
 function picksHtml() {

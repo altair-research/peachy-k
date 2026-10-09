@@ -115,3 +115,9 @@ canvas.draw{background:#fff;border-radius:18px;box-shadow:0 5px 0 #0002;touch-ac
 .card .face{display:none}.card.flip{background:#fff}.card.flip .back{display:none}.card.flip .face{display:inline}
 .card.gone{visibility:hidden}
 .subj.write h2{color:#9d4edd}.big.write{border-top-color:#9d4edd}
+
+.big.surprise{width:100%;max-width:420px;min-height:90px;margin:12px auto;display:block;border-top-color:var(--peach);background:#fff6ec}
+.train.sm .car{min-width:70px;padding:6px}.train.sm .dots{font-size:12px}
+
+.map.n4{grid-template-columns:repeat(4,64px);grid-template-rows:repeat(4,64px)}
+.map.n4 .mc{font-size:38px}

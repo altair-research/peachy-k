@@ -4,6 +4,7 @@ const AREA_WRITE = (u) => B(`Writing · ${u}`, `쓰기 · ${u}`);
 
 // ---------- shared: tap-the-tiles-in-order engine (spell a word / build a sentence) ----------
 function tileRound(game, cfg) {
+  if (dup(game, cfg.target.join(' '))) return game.play();
   const tokens = shuffle([...cfg.target, ...cfg.extra]);
   view().innerHTML = `
     <div class="prompt">${L(cfg.ask)}<button class="say" id="sp" aria-label="${T().listen}">🔊</button></div>
@@ -94,6 +95,7 @@ registerGame({
   play() {
     const lv = lvl('trace'), mode = pick(lv === 1 ? ['up', 'num'] : ['up', 'low', 'num']);
     const ch = mode === 'up' ? pick(TRACE_UP) : mode === 'low' ? pick(TRACE_LOW) : String(1 + rnd(10));
+    if (dup(this, mode + ch)) return this.play();
     const [w, h] = canvasSize(), disp = makeCanvas(w, h), ink = makeCanvas(w, h), mask = makeCanvas(w, h);
     const font = (px) => `800 ${px}px "Arial Rounded MT Bold", Arial, sans-serif`;
     const fs = ch.length > 1 ? h * 0.7 : h * 0.82;
@@ -135,7 +137,8 @@ registerGame({
   id: 'draw', subject: 'write', icon: '🎨', title: B('Draw & Tell', '그리고 말해요'), sub: B('Draw, then tell a story', '그림을 그리고 이야기해요'),
   area: AREA_WRITE('Drawing and writing'),
   play() {
-    const pr = pick(DRAW_PROMPTS), [w, h] = canvasSize(), cv = makeCanvas(w, h);
+    const pr = pick(DRAW_PROMPTS); if (dup(this, pr.en)) return this.play();
+    const [w, h] = canvasSize(), cv = makeCanvas(w, h);
     const colors = ['#1d3557', '#ef476f', '#ff8c42', '#ffd166', '#06d6a0', '#118ab2', '#8338ec', '#8d5524'];
     let color = colors[0], size = 8;
     cv.ctx.fillStyle = '#fff'; cv.ctx.fillRect(0, 0, w, h);

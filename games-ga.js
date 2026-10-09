@@ -25,9 +25,18 @@ registerGame({
   id: 'flags', subject: 'ss', icon: '🇺🇸', title: B('Georgia & U.S. Flags', '조지아 주기와 미국 국기'), sub: B('Which flag is which?', '어느 깃발일까?'),
   area: AREA_SS('Symbols'),
   play() {
-    const ga = rnd(2) === 0;
+    const qs = [
+      { ga: true, ask: B('Tap the GEORGIA flag.', '조지아 주기를 눌러요.') },
+      { ga: false, ask: B('Tap the U.S.A. flag.', '미국 국기를 눌러요.') },
+      { ga: false, ask: B('Which flag has 50 stars?', '별이 50개인 깃발은?') },
+      { ga: true, ask: B('Which flag has a blue square with a circle of stars?', '파란 네모 안에 별이 동그랗게 있는 깃발은?') },
+      { ga: false, ask: B('Which flag has lots of red and white stripes and a blue corner with many stars?', '빨강 흰색 줄이 많고 파란 모서리에 별이 많은 깃발은?') },
+      { ga: true, ask: B('Which flag is the flag of the Peach State?', '복숭아의 주(Peach State) 깃발은?') },
+      { ga: false, ask: B('Which flag is the flag of our country?', '우리나라(미국)의 깃발은?') }
+    ];
+    const q = pick(qs), ga = q.ga;
     quiz(this, {
-      ask: ga ? B('Tap the GEORGIA flag.', '조지아 주기를 눌러요.') : B('Tap the U.S.A. flag.', '미국 국기를 눌러요.'),
+      ask: q.ask,
       opts: [{ html: flagUS(), ok: !ga }, { html: flagGA(), ok: ga }], cls: 'flags',
       after: ga ? B('The Georgia flag has a blue square with 13 stars.', '조지아 주기는 파란 네모 안에 별 13개가 있어요.') : B('The U.S. flag has 50 stars and 13 stripes.', '미국 국기에는 별 50개와 줄 13개가 있어요.'),
       vocab: ga ? 'Georgia flag' : 'U.S. flag'
@@ -63,20 +72,19 @@ registerGame({
   id: 'address', subject: 'ss', icon: '🏠', title: B('Where I Live', '내가 사는 곳'), sub: B('Street, city, state, country', '주소, 도시, 주, 나라'),
   area: AREA_SS('My address'),
   play() {
-    const kinds = ['state', 'country'];
-    if (S.addr.city) kinds.push('city'); if (S.addr.street) kinds.push('street');
-    const kind = pick(kinds);
-    const txt = (v) => `<span class="word">${v}</span>`;
-    let ask, ok, ds;
-    if (kind === 'state') { ask = B('What STATE do you live in?', '우리는 어느 주에 살까요?'); ok = 'Georgia'; ds = ['Florida', 'Alabama']; }
-    else if (kind === 'country') { ask = B('What COUNTRY do you live in?', '우리는 어느 나라에 살까요?'); ok = 'United States'; ds = ['Canada', 'Mexico']; }
-    else if (kind === 'city') { ask = B('What CITY do you live in?', '우리는 어느 도시에 살까요?'); ok = S.addr.city; ds = others(GWINNETT_CITIES.filter(c => c.toLowerCase() !== ok.toLowerCase()), '', 2); }
-    else { ask = B('What is your STREET address?', '우리 집 주소(번지/도로)는 무엇일까요?'); ok = S.addr.street; ds = ['100 Peachtree Street', '25 Maple Lane'].filter(x => x !== ok); }
-    const hint = (!S.addr.city && !S.addr.street) ? `<div class="hint">👨‍👩‍👦 ${T().grownups} → ${T().addrTitle}</div>` : '';
-    quiz(this, {
-      ask, show: '🏠' + hint, opts: [ok, ...ds].map(v => ({ html: txt(v), ok: v === ok })), cls: 'words',
-      after: B(`I live at ${ok}. (${kind})`, `${ok} — 우리 집이에요.`), vocab: ok
-    });
+    const kinds = ['state', 'country', 'nick', 'capital', 'big'];
+    if (S.addr.city) kinds.push('city', 'city'); if (S.addr.street) kinds.push('street', 'street');
+    const kind = pick(kinds), txt = (v) => `<span class="word">${v}</span>`;
+    let ask, ok, ds, after;
+    if (kind === 'state') { ask = B('What STATE do you live in?', '우리는 어느 주에 살까요?'); ok = 'Georgia'; ds = ['Florida', 'Alabama', 'Texas'].slice(0, 2); after = B('I live in the state of Georgia.', '우리는 조지아 주에 살아요.'); }
+    else if (kind === 'country') { ask = B('What COUNTRY do you live in?', '우리는 어느 나라에 살까요?'); ok = 'United States'; ds = ['Canada', 'Mexico']; after = B('I live in the United States of America.', '우리는 미국에 살아요.'); }
+    else if (kind === 'nick') { ask = B('Georgia is called the ___ State.', '조지아는 ___ 주(State)라고 불러요.'); ok = 'Peach'; ds = ['Apple', 'Orange']; after = B('Georgia is the Peach State!', '조지아는 복숭아의 주예요!'); }
+    else if (kind === 'capital') { ask = B('What is the capital city of Georgia?', '조지아 주의 주도(수도)는 어디일까요?'); ok = 'Atlanta'; ds = ['Savannah', 'Macon'].slice(0, 2); after = B('Atlanta is the capital of Georgia.', '애틀랜타가 조지아의 주도예요.'); }
+    else if (kind === 'big') { ask = B('Which is BIGGEST: a city, a state, or a country?', '도시, 주, 나라 중 가장 큰 것은?'); ok = 'Country'; ds = ['City', 'State']; after = B('A country is bigger than a state, and a state is bigger than a city.', '나라는 주보다 크고, 주는 도시보다 커요.'); }
+    else if (kind === 'city') { ask = B('What CITY do you live in?', '우리는 어느 도시에 살까요?'); ok = S.addr.city; ds = others(GWINNETT_CITIES.filter(c => c.toLowerCase() !== ok.toLowerCase()), '', 2); after = B(`I live in ${ok}.`, `우리는 ${ok}에 살아요.`); }
+    else { ask = B('What is your STREET address?', '우리 집 주소(번지/도로)는 무엇일까요?'); ok = S.addr.street; ds = ['100 Peachtree Street', '25 Maple Lane'].filter(x => x !== ok); after = B(`I live at ${ok}.`, `우리 집은 ${ok}예요.`); }
+    const hint = (!S.addr.city && !S.addr.street && kind === 'state') ? `<div class="hint">👨‍👩‍👦 ${T().grownups} → ${T().addrTitle}</div>` : '';
+    quiz(this, { ask, show: (kind === 'nick' ? '🍑' : '🏠') + hint, opts: [ok, ...ds].map(v => ({ html: txt(v), ok: v === ok })), cls: 'words', after, vocab: ok });
   }
 });
 
@@ -86,18 +94,22 @@ registerGame({
   area: AREA_SS('Maps & directions'),
   play() {
     const dirs = [['N', B('North', '북쪽'), [0, -1]], ['E', B('East', '동쪽'), [1, 0]], ['S', B('South', '남쪽'), [0, 1]], ['W', B('West', '서쪽'), [-1, 0]]];
-    const d = pick(dirs), cells = [];
-    for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) {
-      let c = '';
-      if (x === 1 && y === 1) c = '🏠'; else if (x === 1 + d[2][0] && y === 1 + d[2][1]) c = '🌳';
-      cells.push(`<div class="mc">${c}</div>`);
+    const N = 4, items = [['🏠', B('house', '집')], ['🏫', B('school', '학교')], ['🌳', B('tree', '나무')], ['🏪', B('store', '가게')], ['⛲', B('fountain', '분수')], ['🏥', B('hospital', '병원')]];
+    const [a, b] = shuffle(items).slice(0, 2); let ax, ay, d, dist;
+    for (let k = 0; k < 40; k++) {                                        // random start + direction with room to move
+      ax = rnd(N); ay = rnd(N); d = pick(dirs); dist = 1 + rnd(2);
+      const bx = ax + d[2][0] * dist, by = ay + d[2][1] * dist; if (bx >= 0 && bx < N && by >= 0 && by < N) break;
     }
-    const rose = `<div class="rose"><span class="rn">N</span><span class="rw">W</span><span class="re">E</span><span class="rs">S</span></div>`;
+    const bx = ax + d[2][0] * dist, by = ay + d[2][1] * dist, rev = rnd(3) === 0;       // sometimes ask the other way around
+    const ans = rev ? dirs.find(x => x[2][0] === -d[2][0] && x[2][1] === -d[2][1]) : d;
+    const cells = []; for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) cells.push(`<div class="mc">${x === ax && y === ay ? a[0] : x === bx && y === by ? b[0] : ''}</div>`);
+    const rose = '<div class="rose"><span class="rn">N</span><span class="rw">W</span><span class="re">E</span><span class="rs">S</span></div>';
+    const from = rev ? b : a, to = rev ? a : b;
     quiz(this, {
-      ask: B('Which way is the tree from the house?', '집에서 나무는 어느 쪽에 있을까요?'),
-      show: `<div class="mapwrap"><div class="map">${cells.join('')}</div>${rose}</div>`,
-      opts: dirs.map(x => ({ html: `<span class="num">${x[0]}</span>`, label: x[1], ok: x === d })), cls: 'shapes',
-      after: B(`The tree is to the ${d[1].en}.`, `나무는 ${d[1].ko}에 있어요.`), vocab: d[1].en
+      ask: B(`Which way is the ${to[1].en} from the ${from[1].en}?`, `${from[1].ko}에서 ${to[1].ko}은(는) 어느 쪽에 있을까요?`),
+      show: `<div class="mapwrap"><div class="map n4">${cells.join('')}</div>${rose}</div>`,
+      opts: dirs.map(x => ({ html: `<span class="num">${x[0]}</span>`, label: x[1], ok: x === ans })), cls: 'shapes',
+      after: B(`It is to the ${ans[1].en}.`, `${ans[1].ko}에 있어요.`), vocab: ans[1].en
     });
   }
 });
@@ -109,16 +121,20 @@ const CITIZEN = [
   [['🙋', B('Raising a hand to talk', '손을 들고 말해요')], ['📢', B('Shouting in class', '교실에서 소리쳐요')]],
   [['🚶', B('Walking in the hallway', '복도에서 걸어요')], ['🏃', B('Running in the hallway', '복도에서 뛰어요')]],
   [['🙏', B('Saying please and thank you', '"please", "thank you"라고 말해요')], ['🙊', B('Being rude', '무례하게 말해요')]],
-  [['🧸', B('Helping clean up', '정리를 도와요')], ['🛋️', B('Leaving a mess', '어질러 놓고 가요')]]
+  [['🧸', B('Helping clean up', '정리를 도와요')], ['🛋️', B('Leaving a mess', '어질러 놓고 가요')]],
+  [['👂', B('Listening to the teacher', '선생님 말씀을 들어요')], ['🗣️', B('Talking while the teacher talks', '선생님이 말할 때 떠들어요')]],
+  [['🪑', B('Pushing in my chair', '의자를 넣어요')], ['🪑', B('Leaving my chair out', '의자를 그냥 둬요')]],
+  [['🧍', B('Taking turns', '차례를 지켜요')], ['🚷', B('Cutting in line', '새치기해요')]],
+  [['🩹', B('Helping a friend who fell', '넘어진 친구를 도와줘요')], ['😆', B('Laughing at a friend who fell', '넘어진 친구를 비웃어요')]]
 ];
 registerGame({
   id: 'citizen', subject: 'ss', icon: '🌟', title: B('Good Citizens', '착한 시민'), sub: B('Kind and fair', '친절하고 공정하게'),
   area: AREA_SS('Citizenship'),
   play() {
-    const p = pick(CITIZEN);
+    const p = pick(CITIZEN), notQ = rnd(3) === 0;
     quiz(this, {
-      ask: B('Who is being a good citizen?', '누가 좋은 시민일까요?'),
-      opts: [{ html: `<span class="emo">${p[0][0]}</span>`, label: p[0][1], ok: true }, { html: `<span class="emo">${p[1][0]}</span>`, label: p[1][1], ok: false }], cls: 'groups',
+      ask: notQ ? B('Who is NOT being a good citizen?', '누가 좋은 시민이 아닐까요?') : B('Who is being a good citizen?', '누가 좋은 시민일까요?'),
+      opts: [{ html: `<span class="emo">${p[0][0]}</span>`, label: p[0][1], ok: !notQ }, { html: `<span class="emo">${p[1][0]}</span>`, label: p[1][1], ok: notQ }], cls: 'groups',
       after: B('Good citizens are kind and follow the rules!', '좋은 시민은 친절하고 규칙을 지켜요!'), vocab: 'Good citizens follow the rules!'
     });
   }

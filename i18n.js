@@ -32,6 +32,7 @@ const I18N = {
     picksTitle: "Peachy's Picks", quizDone: 'Great work! Start with these games:', reportDone: 'Based on the report card. Start with these games:',
     noPicks: 'Nice! Nothing stands out. Play anything you like!', letsPlay: "Let's play ▶", fromReport: 'Report', fromQuick: 'Quick check',
     picks: "Peachy's picks", findStart: 'Find my starting games',
+    roundDone: 'Round complete!', gotRight: (a, b) => `You got ${a} of ${b} on the first try!`, playAgain: 'Play again', surprise: 'Surprise me!', pickAnother: 'Pick another game',
     clear: 'Clear', done: 'Done', tellAbout: 'Now tell a grown-up about your drawing!'
   },
   ko: {
@@ -64,6 +65,7 @@ const I18N = {
     picksTitle: '피치의 추천', quizDone: '잘했어요! 이 게임부터 해 봐요:', reportDone: '성적표를 바탕으로 골랐어요. 이 게임부터 해 봐요:',
     noPicks: '좋아요! 특별히 약한 곳이 없어요. 하고 싶은 걸 해요!', letsPlay: '놀러 가요 ▶', fromReport: '성적표', fromQuick: '간단 점검',
     picks: '피치의 추천', findStart: '시작 게임 찾기',
+    roundDone: '한 판 끝!', gotRight: (a, b) => `${b}문제 중 ${a}문제를 한 번에 맞혔어요!`, playAgain: '또 하기', surprise: '아무거나 놀기!', pickAnother: '다른 게임 고르기',
     clear: '지우기', done: '다 했어요', tellAbout: '이제 어른에게 그림 이야기를 들려줘요!'
   }
 };

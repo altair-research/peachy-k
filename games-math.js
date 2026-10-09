@@ -8,18 +8,27 @@ registerGame({
   id: 'tens', subject: 'math', icon: '🚂', title: B('Count by Tens', '10씩 세기'), sub: B('10, 20, 30...', '10, 20, 30...'),
   area: AREA_MATH('Counting'),
   play() {
-    const lv = lvl('tens'), max = lv === 1 ? 3 : 10, len = lv === 1 ? 3 : 5;
-    const startIdx = rnd(max - len + 1);
-    const seq = Array.from({ length: len }, (_, i) => (startIdx + i + 1) * 10);
-    const gapAt = lv === 1 ? len - 1 : rnd(len), ans = seq[gapAt];
+    const lv = lvl('tens'), maxK = lv === 1 ? 5 : 10;
+    const kind = lv === 1 ? pick(['gap', 'gap', 'total']) : pick(['gap', 'back', 'total', 'gap']);
     const dots = '<span>🔵</span>'.repeat(10);
-    const set = new Set([ans]);
-    while (set.size < 3) { const v = ans + pick([-20, -10, 10, 20]); if (v > 0 && v <= 100) set.add(v); }
+    const near = (ans) => { const set = new Set([ans]); while (set.size < 3) { const v = ans + pick([-20, -10, 10, 20]); if (v >= 10 && v <= 100) set.add(v); } return [...set].map(v => ({ html: `<span class="num">${v}</span>`, ok: v === ans })); };
+    if (kind === 'total') {
+      const k = 2 + rnd(maxK - 1), ans = k * 10, seq = Array.from({ length: k }, (_, i) => (i + 1) * 10);
+      quiz(this, {
+        ask: B('Each car has 10. How many in all?', '칸마다 10개씩 있어요. 모두 몇 개일까요?'),
+        show: `<div class="train sm">${seq.map(() => `<div class="car"><div class="dots">${dots}</div></div>`).join('')}</div>`,
+        opts: near(ans), after: B(seq.join(', '), seq.join(', '))
+      });
+      return;
+    }
+    const len = lv === 1 ? 4 : 5, startIdx = rnd(maxK - len + 1);
+    let seq = Array.from({ length: len }, (_, i) => (startIdx + i + 1) * 10);
+    if (kind === 'back') seq = seq.reverse();
+    const gapAt = rnd(len), ans = seq[gapAt];
     quiz(this, {
-      ask: B('Which number is missing?', '빠진 숫자는 뭘까요?'),
+      ask: kind === 'back' ? B('Count backward by tens. Which number is missing?', '10씩 거꾸로 세어요. 빠진 숫자는?') : B('Which number is missing?', '빠진 숫자는 뭘까요?'),
       show: `<div class="train">${seq.map((n, i) => `<div class="car ${i === gapAt ? 'gap' : ''}"><div class="n">${i === gapAt ? '?' : n}</div><div class="dots">${i === gapAt ? '' : dots}</div></div>`).join('')}</div>`,
-      opts: [...set].map(v => ({ html: `<span class="num">${v}</span>`, ok: v === ans })),
-      after: B(seq.join(', '), seq.join(', ')),
+      opts: near(ans), after: B(seq.join(', '), seq.join(', ')),
       onCorrect() { const g = $('.car.gap'); g.classList.remove('gap'); g.querySelector('.n').textContent = ans; g.querySelector('.dots').innerHTML = dots; }
     });
   }
@@ -31,6 +40,7 @@ registerGame({
   area: AREA_MATH('Within 10'),
   play() {
     const lv = lvl('ten'), start = lv === 1 ? 5 + rnd(4) : 1 + rnd(8), e = pick(['🍑', '🍎', '🍓', '🍊', '⭐']);
+    if (dup(this, 'ten' + start)) return this.play();
     let filled = start;
     const draw = () => {
       view().innerHTML = `
@@ -150,17 +160,24 @@ const SHAPES = {
 };
 const SHAPE_COLORS = ['#ef476f', '#118ab2', '#06d6a0', '#ffb703', '#8338ec'];
 const shapeSvg = (k, rot) => `<svg viewBox="0 0 100 100" class="shape" style="transform:rotate(${rot}deg)" fill="${pick(SHAPE_COLORS)}" stroke="#1d3557" stroke-width="3">${SHAPES[k].svg}</svg>`;
+const SHAPE_FACTS = {
+  circle: B('Which shape is round, with no corners?', '둥글고 뾰족한 곳이 없는 모양은?'),
+  triangle: B('Which shape has 3 sides?', '변이 3개인 모양은?'),
+  square: B('Which shape has 4 sides that are all the same?', '변 4개가 모두 같은 모양은?'),
+  rectangle: B('Which shape has 4 sides, with 2 long and 2 short?', '긴 변 2개, 짧은 변 2개인 모양은?'),
+  hexagon: B('Which shape has 6 sides?', '변이 6개인 모양은?')
+};
 registerGame({
   id: 'shapes2d', subject: 'math', icon: '🔺', title: B('Shape Finder', '모양 찾기'), sub: B('Circles, squares, triangles...', '동그라미, 네모, 세모...'),
   area: AREA_MATH('Shapes'),
   play() {
-    const lv = lvl('shapes2d'), pool = lv === 1 ? ['circle', 'square', 'triangle'] : Object.keys(SHAPES);
-    const t = pick(pool), ds = others(pool, t, 2);
-    const rot = () => (lv === 1 ? 0 : rnd(61) - 30);
+    const lv = lvl('shapes2d'), pool = lv === 1 ? ['circle', 'square', 'triangle', 'rectangle'] : Object.keys(SHAPES);
+    const t = pick(pool), ds = others(pool, t, 2), byFact = rnd(2) === 0;
+    const rot = () => (lv === 1 ? rnd(2) * 15 : rnd(61) - 30);
     quiz(this, {
-      ask: B(`Tap the ${SHAPES[t].n.en.toUpperCase()}.`, `${SHAPES[t].n.ko}을(를) 눌러요.`),
-      askSay: B(`Tap the ${SHAPES[t].n.en}.`, `${SHAPES[t].n.ko}을 눌러요.`),
-      askExtra: S.lang === 'ko' ? { t: SHAPES[t].n.en, lang: 'en-US' } : null,
+      ask: byFact ? SHAPE_FACTS[t] : B(`Tap the ${SHAPES[t].n.en.toUpperCase()}.`, `${SHAPES[t].n.ko}을(를) 눌러요.`),
+      askSay: byFact ? SHAPE_FACTS[t] : B(`Tap the ${SHAPES[t].n.en}.`, `${SHAPES[t].n.ko}을 눌러요.`),
+      askExtra: S.lang === 'ko' && !byFact ? { t: SHAPES[t].n.en, lang: 'en-US' } : null,
       opts: [t, ...ds].map(k => ({ html: shapeSvg(k, rot()), ok: k === t })), cls: 'shapes',
       after: B(`That is a ${SHAPES[t].n.en}.`, `${SHAPES[t].n.ko}이에요.`), vocab: SHAPES[t].n.en
     });
