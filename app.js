@@ -1,7 +1,7 @@
 'use strict';
 // App shell: home menu grouped by school subject, grown-ups panel, language switch.
-const SUBJECT_ORDER = ['math', 'read', 'ss', 'sci'];
-const SUBJECT_ICON = { math: '🔢', read: '📖', ss: '🍑', sci: '🔬' };
+const SUBJECT_ORDER = ['math', 'read', 'write', 'ss', 'sci'];
+const SUBJECT_ICON = { math: '🔢', read: '📖', write: '✏️', ss: '🍑', sci: '🔬' };
 GAMES.forEach(g => { g.play = g.play.bind(g); });
 
 function home() {

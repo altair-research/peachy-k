@@ -10,15 +10,18 @@ const SUBJECT_RULES = [                                       // detected from t
 ];
 // Fallback games when an assignment name matches no specific rule
 const SUBJECT_DEFAULT = {
-  math: ['tens', 'count', 'order'], read: ['letters', 'sounds', 'rhyme'], write: [],
-  sci: ['living', 'motion', 'sky'], ss: ['flags', 'address', 'jobs'], health: [], conduct: []
+  math: ['tens', 'count', 'order'], read: ['letters', 'sounds', 'rhyme'], write: ['label', 'trace', 'draw'],
+  sci: ['living', 'motion', 'sky', 'senses'], ss: ['flags', 'address', 'jobs'], health: [], conduct: []
 };
 // [subject, regex on assignment name, games (first = strongest link)]
 const SKILL_RULES = [
   ['math', /by 10|tens/i, ['tens', 'order']],
   ['math', /representing 10|10 in sets|ten frame|make 10|compos|decompos/i, ['ten', 'teens']],
   ['math', /one to one|one-to-one|counting sets|scattered|array|circle|line/i, ['count']],
-  ['math', /rote|counting (forward|backward)|number path|writing numbers/i, ['order', 'count']],
+  ['math', /writing numbers/i, ['trace', 'order']],
+  ['math', /rote|counting (forward|backward)|number path/i, ['order', 'count']],
+  ['math', /length|longer|shorter|measur|heav/i, ['measure']],
+  ['math', /\btime\b|calendar|routine/i, ['daytime']],
   ['math', /shape/i, ['shapes2d', 'shapes3d']],
   ['math', /pattern/i, ['pattern']],
   ['math', /compar|more|fewer|less/i, ['compare']],
@@ -28,6 +31,10 @@ const SKILL_RULES = [
   ['read', /uppercase|lowercase|letter names|alphabet/i, ['letters']],
   ['read', /letter sounds?|phonic|beginning sound/i, ['sounds', 'rhyme']],
   ['read', /rhym/i, ['rhyme']],
+  ['write', /drawing|story response|label|student response/i, ['draw', 'label']],
+  ['write', /sentence|opinion|informational|narrative/i, ['sentence', 'label']],
+  ['read', /sight|high.frequency/i, ['sight']],
+  ['read', /syllable/i, ['syllable']],
   ['ss', /labor day|worker|job|community/i, ['jobs', 'holidays']],
   ['ss', /flag|symbol/i, ['flags', 'gasymbols']],
   ['ss', /address|where i live|home/i, ['address']],
@@ -37,6 +44,7 @@ const SKILL_RULES = [
   ['ss', /unit 1 assessment|our nation/i, ['flags', 'address', 'gasymbols', 'citizen']],
   ['sci', /force|push|pull|motion/i, ['motion']],
   ['sci', /living|plant|animal|needs/i, ['living']],
+  ['sci', /sense|smell|taste|hear|touch/i, ['senses']],
   ['sci', /sky|sun|moon|star|day|night/i, ['sky']]
 ];
 

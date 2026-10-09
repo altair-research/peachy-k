@@ -6,7 +6,7 @@ const I18N = {
     speech: 'en-US', switchTo: '한국어',
     app: 'Peachy K', tagline: 'Georgia Kindergarten Games',
     pick: 'Pick a game!',
-    subjects: { math: 'Math', read: 'Reading', ss: 'Georgia & Our Nation', sci: 'Science' },
+    subjects: { math: 'Math', read: 'Reading', write: 'Writing', ss: 'Georgia & Our Nation', sci: 'Science' },
     right: ['Great job!', 'Awesome!', 'You did it!', 'Super!', 'Peachy!'],
     again: 'Try again!', next: 'Next ▶', listen: 'Listen',
     grownups: 'For grown-ups', back: 'Back',
@@ -31,13 +31,14 @@ const I18N = {
     found: (n, w) => `Found ${n} graded items; ${w} need more practice.`, unmapped: 'No game for these yet', seePicks: "See Peachy's picks",
     picksTitle: "Peachy's Picks", quizDone: 'Great work! Start with these games:', reportDone: 'Based on the report card. Start with these games:',
     noPicks: 'Nice! Nothing stands out. Play anything you like!', letsPlay: "Let's play ▶", fromReport: 'Report', fromQuick: 'Quick check',
-    picks: "Peachy's picks", findStart: 'Find my starting games'
+    picks: "Peachy's picks", findStart: 'Find my starting games',
+    clear: 'Clear', done: 'Done', tellAbout: 'Now tell a grown-up about your drawing!'
   },
   ko: {
     speech: 'ko-KR', switchTo: 'English',
     app: '피치 K', tagline: '조지아 유치원(K) 학습 게임',
     pick: '게임을 골라요!',
-    subjects: { math: '수학', read: '읽기', ss: '조지아와 우리나라', sci: '과학' },
+    subjects: { math: '수학', read: '읽기', write: '쓰기', ss: '조지아와 우리나라', sci: '과학' },
     right: ['잘했어요!', '멋져요!', '해냈어요!', '최고예요!', '피치 좋아요!'],
     again: '다시 해 봐요!', next: '다음 ▶', listen: '듣기',
     grownups: '보호자용', back: '뒤로',
@@ -62,6 +63,7 @@ const I18N = {
     found: (n, w) => `점수 항목 ${n}개를 찾았고, 더 연습이 필요한 것은 ${w}개예요.`, unmapped: '아직 맞는 게임이 없는 항목', seePicks: '피치의 추천 보기',
     picksTitle: '피치의 추천', quizDone: '잘했어요! 이 게임부터 해 봐요:', reportDone: '성적표를 바탕으로 골랐어요. 이 게임부터 해 봐요:',
     noPicks: '좋아요! 특별히 약한 곳이 없어요. 하고 싶은 걸 해요!', letsPlay: '놀러 가요 ▶', fromReport: '성적표', fromQuick: '간단 점검',
-    picks: '피치의 추천', findStart: '시작 게임 찾기'
+    picks: '피치의 추천', findStart: '시작 게임 찾기',
+    clear: '지우기', done: '다 했어요', tellAbout: '이제 어른에게 그림 이야기를 들려줘요!'
   }
 };
