@@ -79,3 +79,8 @@ html,body{overflow-x:hidden}
 .opts.words .opt,.opts.bars .opt{min-height:64px}
 .opts.tiles .opt.tile{min-height:64px}
 .cheer{margin-top:clamp(8px,2vh,20px)}
+
+/* global sound toggle in the header */
+#muteBtn{width:52px;height:52px;font-size:26px;background:#fff}
+#muteBtn.off{background:#ffd6d0}
+body.muted .say{opacity:.35}

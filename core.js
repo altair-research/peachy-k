@@ -22,7 +22,7 @@ const lvl = (id) => (DIAG.active ? 1 : stat(id).level);
 // Speech is always paired with visible text/visuals, so muted devices (and missing voices) still work.
 function say(text, lang, keepQueue) {
   try {
-    if (!('speechSynthesis' in window) || !text) return;
+    if (S.muted || !('speechSynthesis' in window) || !text) return;
     if (!keepQueue) speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang || T().speech; u.rate = 0.85;

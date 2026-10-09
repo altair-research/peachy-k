@@ -46,6 +46,12 @@ function grownups() {
   $('#b').onclick = home;
 }
 
+function renderMute() {
+  const b = $('#muteBtn'); b.textContent = S.muted ? '🔇' : '🔊'; b.classList.toggle('off', !!S.muted);
+  b.setAttribute('aria-pressed', S.muted ? 'true' : 'false'); document.body.classList.toggle('muted', !!S.muted);
+}
+$('#muteBtn').onclick = () => { S.muted = !S.muted; save(); try { speechSynthesis.cancel(); } catch (e) {} renderMute(); };
+renderMute();
 $('#homeBtn').onclick = () => { quitDiag(); home(); };
 $('#langBtn').onclick = () => { S.lang = S.lang === 'en' ? 'ko' : 'en'; save(); quitDiag(); home(); };
 renderPeaches(); S.introSeen ? home() : intro();
