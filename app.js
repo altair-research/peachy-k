@@ -10,14 +10,22 @@ function home() {
   view().innerHTML = `
     <h1>🍑 ${T().app}</h1>
     <div class="tag">${T().tagline}</div>
+    ${picksHtml()}
     ${SUBJECT_ORDER.map(sub => `
       <section class="subj ${sub}"><h2>${SUBJECT_ICON[sub]} ${T().subjects[sub]}</h2>
         <div class="menu">${GAMES.filter(g => g.subject === sub).map(g => `<button class="big ${sub}" data-id="${g.id}"><span class="gi">${g.icon}</span>${L(g.title)}<small>${L(g.sub)}</small></button>`).join('')}</div>
       </section>`).join('')}
+    <button class="link" id="find">${T().findStart}</button>
     <button class="link" id="parent">${T().grownups}</button>
     <p class="note">${T().note}</p>`;
   $$('.big').forEach(b => b.onclick = () => GAMES.find(g => g.id === b.dataset.id).play());
-  $('#parent').onclick = grownups;
+  $('#parent').onclick = grownups; $('#find').onclick = intro;
+  $$('.pick').forEach(b => b.onclick = () => gameById(b.dataset.id).play());
+}
+
+function picksHtml() {
+  const picks = currentPicks(3); if (!picks.length) return '';
+  return `<section class="subj picks"><h2>⭐ ${T().picks}</h2><div class="menu">${picks.map(p => { const g = gameById(p.id); return `<button class="big ${g.subject} pick" data-id="${g.id}"><span class="gi">${g.icon}</span>${L(g.title)}<small>${whyText(p)}</small></button>`; }).join('')}</div></section>`;
 }
 
 function grownups() {
@@ -32,11 +40,11 @@ function grownups() {
     <button class="link" id="reset">${T().reset}</button>
     <div><button class="next" id="b">${T().back}</button></div>`;
   $('#saveAddr').onclick = () => { S.addr = { street: $('#street').value.trim(), city: $('#city').value.trim() }; save(); $('#savedMsg').textContent = T().saved; };
-  $('#reset').onclick = () => { if (confirm(T().resetAsk)) { S.stats = {}; S.peaches = 0; save(); renderPeaches(); grownups(); } };
+  $('#reset').onclick = () => { if (confirm(T().resetAsk)) { S.stats = {}; S.peaches = 0; S.profile = null; save(); renderPeaches(); grownups(); } };
   $('#b').onclick = home;
 }
 
-$('#homeBtn').onclick = home;
-$('#langBtn').onclick = () => { S.lang = S.lang === 'en' ? 'ko' : 'en'; save(); home(); };
-renderPeaches(); home();
+$('#homeBtn').onclick = () => { quitDiag(); home(); };
+$('#langBtn').onclick = () => { S.lang = S.lang === 'en' ? 'ko' : 'en'; save(); quitDiag(); home(); };
+renderPeaches(); S.introSeen ? home() : intro();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

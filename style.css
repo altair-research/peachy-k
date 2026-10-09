@@ -84,3 +84,16 @@ input{font:inherit;font-size:20px;padding:12px;border-radius:12px;border:2px sol
 .note{font-size:14px;color:#8a7a7a;max-width:640px;margin:10px auto}
 .focus{font-size:20px}
 @media (max-width:600px){.flag{max-width:70vw}.opt .emo{font-size:56px}.map{grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px)}}
+
+.progress{height:26px;background:#fff;border-radius:999px;margin:4px auto 0;max-width:420px;position:relative;overflow:hidden;box-shadow:inset 0 2px 0 #0002}
+.progress div{height:100%;background:var(--peach)}
+.progress span{position:absolute;inset:0;font-size:16px;font-weight:700;line-height:26px}
+.skip{background:none;font-size:20px;text-decoration:underline;margin:6px 0}
+.opt.picked{background:#ffe8b0}
+.big.pick{border-top-width:8px;position:relative}
+.big.pick::before{content:'⭐';position:absolute;right:10px;top:6px;font-size:26px}
+.subj.picks h2{color:#d9552b}
+.intro .big{min-height:170px}
+textarea{width:100%;max-width:640px;font:inherit;font-size:16px;padding:10px;border-radius:12px;border:2px solid #cbb}
+.note2{font-size:18px;color:#6b4a3a}
+.warn{color:var(--bad);font-weight:700}

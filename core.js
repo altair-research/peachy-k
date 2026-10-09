@@ -16,7 +16,8 @@ const pick = (a) => a[rnd(a.length)];
 const shuffle = (a) => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = rnd(i + 1); [r[i], r[j]] = [r[j], r[i]]; } return r; };
 const others = (arr, not, n) => shuffle(arr.filter(x => x !== not)).slice(0, n);
 const stat = (id) => (S.stats[id] = S.stats[id] || freshStat());
-const lvl = (id) => stat(id).level;
+const DIAG = { active: false };                    // quick-check mode (see profile.js)
+const lvl = (id) => (DIAG.active ? 1 : stat(id).level);
 
 // Speech is always paired with visible text/visuals, so muted devices (and missing voices) still work.
 function say(text, lang, keepQueue) {
@@ -65,7 +66,9 @@ function quiz(game, item) {
   $('#sp').onclick = ask; ask();
   if (item.onRender) item.onRender();
   let missed = false;
+  if (DIAG.active) DIAG.decorate(game);
   $$('.opt').forEach(btn => btn.onclick = () => {
+    if (DIAG.active) { DIAG.answer(game, !!opts[+btn.dataset.i].ok, btn); return; }
     if (opts[+btn.dataset.i].ok) {
       btn.classList.add('ok');
       record(game.id, !missed); if (!missed) addPeach();

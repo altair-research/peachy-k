@@ -18,7 +18,20 @@ const I18N = {
     tensAsk: 'Which number is missing?',
     fillAsk: 'Tap the empty boxes to make ten!',
     pair: (a, b) => `${a} and ${b} make ten!`,
-    countAsk: 'Tap each one to count. How many are there?'
+    countAsk: 'Tap each one to count. How many are there?',
+    dontKnow: "I don't know", introLead: "Let's find the best games to start with!",
+    quickCheck: 'Quick check', quickCheckSub: '16 questions, about 3 minutes',
+    importCard: 'Import report card', importCardSub: 'Grown-ups: PDF or pasted text',
+    justPlay: 'Just play', justPlaySub: 'Pick any game',
+    privacy: 'Everything is read on this device. Nothing is uploaded.',
+    importTitle: 'Import report card', importHelp: 'Choose the progress report PDF (or a text file). It is read on this device only. Names are not saved.',
+    orPaste: 'Or copy the text from the report and paste it here:', pastePh: 'Paste report text here',
+    readIt: 'Read it', noItems: "I couldn't find graded assignments. Try the PDF from the school email, or paste the text.",
+    readFail: "I couldn't read that file. Try pasting the text instead.",
+    found: (n, w) => `Found ${n} graded items; ${w} need more practice.`, unmapped: 'No game for these yet', seePicks: "See Peachy's picks",
+    picksTitle: "Peachy's Picks", quizDone: 'Great work! Start with these games:', reportDone: 'Based on the report card. Start with these games:',
+    noPicks: 'Nice! Nothing stands out. Play anything you like!', letsPlay: "Let's play ▶", fromReport: 'Report', fromQuick: 'Quick check',
+    picks: "Peachy's picks", findStart: 'Find my starting games'
   },
   ko: {
     speech: 'ko-KR', switchTo: 'English',
@@ -36,6 +49,19 @@ const I18N = {
     tensAsk: '빠진 숫자는 뭘까요?',
     fillAsk: '빈 칸을 눌러서 10을 만들어요!',
     pair: (a, b) => `${a}와 ${b}를 합치면 십!`,
-    countAsk: '하나씩 눌러서 세어 봐요. 모두 몇 개일까요?'
+    countAsk: '하나씩 눌러서 세어 봐요. 모두 몇 개일까요?',
+    dontKnow: '잘 모르겠어요', introLead: '먼저 하면 좋은 게임을 찾아볼까요?',
+    quickCheck: '간단 점검', quickCheckSub: '16문제, 약 3분',
+    importCard: '성적표 가져오기', importCardSub: '보호자용: PDF 또는 붙여넣기',
+    justPlay: '그냥 놀기', justPlaySub: '아무 게임이나 골라요',
+    privacy: '모든 내용은 이 기기에서만 읽어요. 업로드하지 않아요.',
+    importTitle: '성적표 가져오기', importHelp: '학교에서 받은 진도 보고서 PDF(또는 텍스트 파일)를 고르세요. 이 기기에서만 읽고, 이름은 저장하지 않아요.',
+    orPaste: '또는 보고서의 글을 복사해서 여기에 붙여넣으세요:', pastePh: '여기에 보고서 글을 붙여넣어요',
+    readIt: '읽어 보기', noItems: '점수가 있는 과제를 찾지 못했어요. 학교 이메일의 PDF를 쓰거나 글을 붙여넣어 보세요.',
+    readFail: '파일을 읽지 못했어요. 글을 붙여넣어 보세요.',
+    found: (n, w) => `점수 항목 ${n}개를 찾았고, 더 연습이 필요한 것은 ${w}개예요.`, unmapped: '아직 맞는 게임이 없는 항목', seePicks: '피치의 추천 보기',
+    picksTitle: '피치의 추천', quizDone: '잘했어요! 이 게임부터 해 봐요:', reportDone: '성적표를 바탕으로 골랐어요. 이 게임부터 해 봐요:',
+    noPicks: '좋아요! 특별히 약한 곳이 없어요. 하고 싶은 걸 해요!', letsPlay: '놀러 가요 ▶', fromReport: '성적표', fromQuick: '간단 점검',
+    picks: '피치의 추천', findStart: '시작 게임 찾기'
   }
 };
