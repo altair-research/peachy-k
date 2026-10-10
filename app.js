@@ -1,7 +1,7 @@
 'use strict';
 // App shell: home menu grouped by school subject, grown-ups panel, language switch.
-const SUBJECT_ORDER = ['math', 'read', 'write', 'ss', 'sci', 'life', 'brain'];
-const SUBJECT_ICON = { math: '🔢', read: '📖', write: '✏️', ss: '🍑', sci: '🔬', life: '🌈', brain: '🧠' };
+const SUBJECT_ORDER = ['math', 'read', 'write', 'ss', 'sci', 'life', 'create', 'brain'];
+const SUBJECT_ICON = { math: '🔢', read: '📖', write: '✏️', ss: '🍑', sci: '🔬', life: '🌈', create: '🎭', brain: '🧠' };
 GAMES.forEach(g => { g.play = g.play.bind(g); });
 
 function home() {
@@ -14,7 +14,7 @@ function home() {
     <div class="toprow"><button class="big surprise" id="surprise"><span class="gi">🎲</span>${T().surprise}</button><button class="big surprise" id="stickers"><span class="gi">🏆</span>${T().stickers} ${S.stickers.length}/${ALL_STICKERS.length}</button></div>
     ${picksHtml()}
     ${SUBJECT_ORDER.map(sub => `
-      <section class="subj ${sub}"><h2><span>${SUBJECT_ICON[sub]} ${T().subjects[sub]}</span>${sub === 'brain' ? '' : `<button class="chk" data-sub="${sub}">📋 ${T().checkBtn}</button>`}</h2>
+      <section class="subj ${sub}"><h2><span>${SUBJECT_ICON[sub]} ${T().subjects[sub]}</span>${(sub === 'brain' || sub === 'create') ? '' : `<button class="chk" data-sub="${sub}">📋 ${T().checkBtn}</button>`}</h2>
         <div class="menu">${GAMES.filter(g => g.subject === sub).map(g => `<button class="big ${sub}" data-id="${g.id}"><span class="gi">${g.icon}</span>${L(g.title)}<small>${L(g.sub)}</small></button>`).join('')}</div>
       </section>`).join('')}
     <button class="link" id="find">${T().findStart}</button>

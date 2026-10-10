@@ -249,3 +249,31 @@ pk-cheer .peachy.oops{animation:shake .4s}
 .bboard{background:#c5e9e3;border:6px solid #7fc6c3;border-radius:16px;gap:1px;padding:1px;box-shadow:0 5px 0 #6bb3af}
 .bc{background:#e8fdf9;border-radius:3px}
 .bc.g{background:#d7f5ef;border:2.5px dashed #6fbdb6}
+
+/* think & create */
+.subj.create h2{color:#d6336c}.big.create{border-top-color:#d6336c}
+.gdots{display:flex;gap:6px;justify-content:center;margin:6px 0}.gdots i{width:12px;height:12px;border-radius:50%;background:#e7d7cb}.gdots i.ok{background:#2a9d8f}.gdots i.bad{background:#e76f51}
+.gstage{display:flex;align-items:center;justify-content:center;width:min(78vw,300px);height:min(78vw,300px);margin:12px auto;border-radius:32px;background:linear-gradient(#fff,#fff4e8);border:3px solid #ffe0cc;box-shadow:0 8px 0 #f0cdb7;font-size:clamp(90px,28vw,150px);touch-action:manipulation}
+.gstage.tap{background:#d6f5e3;border-color:#2a9d8f}
+.gfb{min-height:36px;font-size:30px;text-align:center}
+.cardstage{display:flex;justify-content:center;align-items:center;min-height:110px;margin:8px 0}
+.boxes{display:flex;gap:18px;justify-content:center;margin:10px 0}
+.cbox{width:clamp(110px,34vw,150px);height:clamp(110px,34vw,150px);border-radius:22px;background:linear-gradient(#fff,#fff6ee);border:4px dashed #cdb9a8;box-shadow:0 6px 0 #f0cdb7;display:flex;align-items:center;justify-content:center}
+.cbox.hint{border-color:#2a9d8f;background:#d6f5e3;animation:pop .35s}
+.memrow{display:flex;gap:12px;justify-content:center;font-size:clamp(46px,14vw,72px);flex-wrap:wrap;margin:16px 0}
+.timebar{height:10px;max-width:320px;margin:10px auto;background:#f3d9c8;border-radius:99px;overflow:hidden}.timebar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ffd166,#ff9a76);transform-origin:left;animation:shrink linear forwards}
+@keyframes shrink{to{transform:scaleX(0)}}
+.sdwrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.sdg{display:grid;grid-template-columns:repeat(var(--c),clamp(52px,16vw,74px));gap:6px;background:#fff;padding:8px;border-radius:16px;box-shadow:0 4px 0 #f0cdb7}
+.sdc{font-size:clamp(30px,10vw,46px);background:#fff8f1;border-radius:12px;aspect-ratio:1;padding:0;border:2px solid #ffe4d3}
+.sdc.found{background:#d6f5e3;border-color:#2a9d8f}.sdc.no{background:#ffd9d4;animation:shake .3s}
+.sdarrow{font-size:20px;opacity:.5}
+.shape.big{width:clamp(110px,34vw,170px);height:clamp(110px,34vw,170px);fill:#cfd8e6}
+.opt.idea.picked{background:linear-gradient(#ffe9a8,#ffd166);border-color:#f5b800}
+.opts.imagine{flex-wrap:wrap}.opts.imagine .opt{flex:0 0 30%;max-width:none}
+.scene{position:relative;width:100%;max-width:440px;aspect-ratio:1.25;margin:8px auto;border-radius:22px;box-shadow:0 6px 0 #0002;overflow:hidden;touch-action:none;cursor:pointer;border:4px solid #fff}
+.scene .ps{position:absolute;font-size:clamp(32px,10vw,50px);line-height:1;user-select:none}
+.pal{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:440px;margin:6px auto}
+.stkb{font-size:28px;width:52px;height:52px;border-radius:14px;background:#fff;box-shadow:0 3px 0 #f0cdb7;padding:0}.stkb.sel{background:#ffe9a8;outline:3px solid #f5b800}
+.sparkrow{display:flex;gap:10px;justify-content:center;font-size:clamp(60px,20vw,100px)}
+.spark{animation:float 3s ease-in-out infinite}.spark:nth-child(2){animation-delay:.4s}.spark:nth-child(3){animation-delay:.8s}
