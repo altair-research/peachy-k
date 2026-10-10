@@ -15,6 +15,7 @@ function tileRound(game, cfg) {
   const ask = () => say(L(cfg.askSay || cfg.ask));
   $('#sp').onclick = ask; ask();
   let pos = 0, missed = false;
+  if (DIAG.active) DIAG.decorate(game);
   $$('.tile').forEach(b => b.onclick = () => {
     if (b.disabled) return;
     const tok = tokens[+b.dataset.i];
@@ -23,12 +24,13 @@ function tileRound(game, cfg) {
       b.disabled = true; b.classList.add('used'); pos++;
       if (cfg.speakTiles) say(tok, 'en-US');
       if (pos === cfg.target.length) {
+        if (DIAG.active) { DIAG.answer(game, !missed, null); return; }
         record(game.id, !missed); if (!missed) addPeach();
         $('#cheer').textContent = pick(T().right);
         if (cfg.after) { $('#fact').textContent = L(cfg.after); say(cfg.vocab || L(cfg.after), cfg.vocab ? 'en-US' : undefined); }
         nextButton(() => game.play());
       }
-    } else { b.classList.add('no'); setTimeout(() => b.classList.remove('no'), 400); if (!missed) { missed = true; record(game.id, false); } say(T().again); }
+    } else { b.classList.add('no'); setTimeout(() => b.classList.remove('no'), 400); if (!missed) { missed = true; if (!DIAG.active) record(game.id, false); } say(T().again); }
   });
 }
 
@@ -111,6 +113,7 @@ registerGame({
       <div><button class="pill" id="clr">${T().clear}</button></div><div class="cheer" id="cheer"></div>`;
     $('#cw').appendChild(disp.c);
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
+    if (DIAG.active) DIAG.decorate(this);
     const stroke = (cv) => (a, b) => { cv.ctx.strokeStyle = color; cv.ctx.lineWidth = bw; cv.ctx.beginPath(); cv.ctx.moveTo(a[0], a[1]); cv.ctx.lineTo(b[0] + 0.01, b[1]); cv.ctx.stroke(); };
     const sd = stroke(disp), si = stroke(ink);
     const evaluate = () => {
@@ -121,7 +124,8 @@ registerGame({
     bindStroke(disp, color, bw, (a, b) => { sd(a, b); si(a, b); }, () => {
       if (done) return; const r = evaluate(); window.__trace = r;
       if (r.coverage >= 0.5 && r.spill < 0.65) {
-        done = true; record('trace', !missed); if (!missed) addPeach();
+        done = true; if (DIAG.active) { DIAG.answer(this, !missed, null); return; }
+        record('trace', !missed); if (!missed) addPeach();
         $('#cheer').textContent = pick(T().right); say(ch, 'en-US'); disp.c.onpointerdown = null; nextButton(() => this.play());
       }
     });

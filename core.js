@@ -17,7 +17,7 @@ const shuffle = (a) => { const r = [...a]; for (let i = r.length - 1; i > 0; i--
 const others = (arr, not, n) => shuffle(arr.filter(x => x !== not)).slice(0, n);
 const stat = (id) => (S.stats[id] = S.stats[id] || freshStat());
 const DIAG = { active: false };                    // quick-check mode (see profile.js)
-const lvl = (id) => (DIAG.active ? 1 : stat(id).level);
+const lvl = (id) => (DIAG.active ? (DIAG.lv || 1) : stat(id).level);
 
 // Speech is always paired with visible text/visuals, so muted devices (and missing voices) still work.
 function say(text, lang, keepQueue) {
@@ -92,7 +92,7 @@ function nextButton(fn) {
 function quiz(game, item) {
   const askText = L(item.ask);
   const key = askText + '|' + (item.show || '').replace(/style="[^"]*"/g, '') + '|' + item.opts.map(o => o.html + (o.ok ? '*' : '')).sort().join(',');
-  if (!DIAG.active && dup(game, key)) return game.play();
+  if (dup(game, key)) return game.play();
   const opts = shuffle(item.opts);
   view().innerHTML = `
     <div class="prompt">${askText}<button class="say" id="sp" aria-label="${T().listen}">🔊</button></div>

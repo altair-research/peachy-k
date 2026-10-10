@@ -1,53 +1,96 @@
 'use strict';
-// Starting-point finder: (1) read a progress report (PDF or pasted text) with rule-based parsing,
-// (2) a 3-minute "quick check" built from the real games. Both produce "Peachy's picks".
-// Everything runs in the browser; nothing is uploaded.
+// Starting-point finder and check-ups:
+//  (1) read a progress report (PDF or pasted text) with rule-based parsing,
+//  (2) a full "quick check" (16 questions) and per-subject check-ups (8-10 questions),
+//  (3) re-check any time: results are stored per date on this device and compared with the last time.
+// All of this produces "Peachy's picks". Everything runs in the browser; nothing is uploaded.
 
 const DIAG_IDS = ['count', 'order', 'tens', 'teens', 'compare', 'addsub', 'shapes2d', 'pattern',
   'letters', 'sounds', 'rhyme', 'flags', 'address', 'compass', 'living', 'motion'];
+const CHECK_SKIP = ['ten', 'draw', 'memory'];                       // games that cannot be scored as one question
 const gameById = (id) => GAMES.find(g => g.id === id);
+
+// ---- check history ----
+S.checks = S.checks || [];
+function latestResults() {                                          // per game: result of the most recent check
+  const r = {};
+  S.checks.forEach(c => { const per = {}; c.items.forEach(it => { per[it.id] = (per[it.id] !== false) && it.ok; }); Object.assign(r, per); });
+  if (!S.checks.length && S.profile && S.profile.diag) S.profile.diag.missed.forEach(id => { r[id] = false; });   // older saves
+  return r;
+}
 
 // ---- picks ----
 function currentPicks(max = 3) {
-  const P = S.profile; if (!P) return [];
+  const P = S.profile || {}, res = latestResults();
   const need = {}, why = {};
   const add = (id, v, r) => { need[id] = (need[id] || 0) + v; (why[id] = why[id] || []).push(r); };
   if (P.report && P.report.picks.length) {
     const top = P.report.picks[0].score || 1;
     P.report.picks.forEach(p => add(p.id, (p.score / top) * 3, p.reasons[0]));
   }
-  if (P.diag) P.diag.missed.forEach(id => add(id, 3, '__quick__'));
+  Object.keys(res).forEach(id => { if (res[id] === false) add(id, 3, '__quick__'); });
   return Object.keys(need)
     .filter(id => gameById(id) && (stat(id).right - stat(id).wrong) < 8)        // drop once clearly mastered in play
     .sort((a, b) => need[b] - need[a]).slice(0, max)
     .map(id => ({ id, need: need[id], why: why[id] }));
 }
 
-// ---- quick check ----
+// ---- check-ups ----
+function buildCheck(scope) {
+  if (scope === 'all') return DIAG_IDS.map(id => ({ id, lv: 1 }));
+  const capable = GAMES.filter(g => g.subject === scope && !CHECK_SKIP.includes(g.id));
+  const items = shuffle(capable).map(g => ({ id: g.id, lv: 1 }));
+  const extra = shuffle(capable).map(g => ({ id: g.id, lv: 2 }));        // second, harder question for small subjects
+  while (items.length < 8 && extra.length) items.push(extra.shift());
+  return items.slice(0, 10);
+}
 DIAG.decorate = (game) => {
-  const n = DIAG.i + 1, tot = DIAG_IDS.length;
+  const n = DIAG.i + 1, tot = DIAG.items.length;
   view().insertAdjacentHTML('afterbegin', `<div class="progress"><div style="width:${Math.round(100 * DIAG.i / tot)}%"></div><span>${n}/${tot}</span></div>`);
   $('.prompt').insertAdjacentHTML('afterend', `<button class="skip" id="skip">🤷 ${T().dontKnow}</button>`);
   $('#skip').onclick = () => DIAG.answer(game, false, null);
 };
 DIAG.answer = (game, ok, btn) => {
   if (DIAG.busy) return; DIAG.busy = true;
-  DIAG.res[game.id] = ok;
+  DIAG.res.push({ id: game.id, lv: DIAG.lv, ok });
   if (btn) btn.classList.add('picked');
   setTimeout(() => { DIAG.busy = false; DIAG.i++; diagStep(); }, 450);
 };
-function startDiag() { S.introSeen = true; DIAG.active = true; DIAG.i = 0; DIAG.res = {}; DIAG.busy = false; diagStep(); }
+function startDiag(scope) {
+  S.introSeen = true; DIAG.scope = typeof scope === 'string' ? scope : 'all';
+  DIAG.items = buildCheck(DIAG.scope); DIAG.active = true; DIAG.i = 0; DIAG.res = []; DIAG.busy = false; diagStep();
+}
 function diagStep() {
-  if (DIAG.i >= DIAG_IDS.length) return finishDiag();
-  gameById(DIAG_IDS[DIAG.i]).play();
+  if (DIAG.i >= DIAG.items.length) return finishDiag();
+  const it = DIAG.items[DIAG.i]; DIAG.lv = it.lv; gameById(it.id).play();
 }
 function finishDiag() {
   DIAG.active = false;
-  S.profile = S.profile || {};
-  S.profile.diag = { at: new Date().toISOString().slice(0, 10), missed: DIAG_IDS.filter(id => DIAG.res[id] === false) };
-  save(); picksScreen(true);
+  const prev = [...S.checks].reverse().find(c => c.scope === DIAG.scope);
+  const check = { at: new Date().toISOString().slice(0, 16), scope: DIAG.scope, items: DIAG.res, ok: DIAG.res.filter(x => x.ok).length, total: DIAG.res.length };
+  S.checks.push(check); if (S.checks.length > 40) S.checks.shift();
+  S.profile = S.profile || {}; save(); checkResult(check, prev);
 }
 function quitDiag() { DIAG.active = false; DIAG.busy = false; }
+const scopeName = (scope) => (scope === 'all' ? T().scopeAll : T().subjects[scope]);
+
+function checkResult(check, prev) {
+  const per = (c) => { const r = {}; c.items.forEach(it => { r[it.id] = (r[it.id] !== false) && it.ok; }); return r; };
+  const now = per(check), before = prev ? per(prev) : {};
+  const improved = Object.keys(now).filter(id => now[id] && before[id] === false);
+  const stillMissed = Object.keys(now).filter(id => !now[id]);
+  const gameLine = (id) => `${gameById(id).icon} ${L(gameById(id).title)}`;
+  view().innerHTML = `<h1>📋 ${T().checkDone}</h1>
+    <p class="tag">${scopeName(check.scope)}</p>
+    <div class="scorebox"><span class="bigscore">${check.ok}/${check.total}</span><span class="peachrow">${'🍑'.repeat(check.ok)}</span></div>
+    ${prev ? `<p class="cmp">${T().lastTime(prev.ok, prev.total)} → ${check.ok >= prev.ok ? '⬆️' : '➡️'} ${check.ok}/${check.total}${check.ok > prev.ok ? ` — ${T().better}` : ''}</p>` : ''}
+    ${improved.length ? `<p class="good">✅ ${T().improved}: ${improved.map(gameLine).join(' · ')}</p>` : ''}
+    ${stillMissed.length ? `<p class="note2">💪 ${T().practiceThese}: ${stillMissed.map(gameLine).join(' · ')}</p>` : `<p class="good">🌟 ${T().allRight}</p>`}
+    <button class="next" id="seePicks">${T().seePicks}</button><div><button class="link" id="b">${T().letsPlay}</button></div>`;
+  $('#seePicks').onclick = () => picksScreen(true);
+  $('#b').onclick = home;
+  say(T().checkDone);
+}
 
 // ---- report import ----
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
@@ -115,5 +158,5 @@ function intro() {
       <button class="big sci" id="ip"><span class="gi">▶</span>${T().justPlay}<small>${T().justPlaySub}</small></button>
     </div>
     <p class="note">${T().privacy}</p>`;
-  $('#iq').onclick = startDiag; $('#ir').onclick = importScreen; $('#ip').onclick = () => { S.introSeen = true; save(); home(); };
+  $('#iq').onclick = () => startDiag('all'); $('#ir').onclick = importScreen; $('#ip').onclick = () => { S.introSeen = true; save(); home(); };
 }
