@@ -7,7 +7,7 @@
 
 const DIAG_IDS = ['count', 'order', 'tens', 'teens', 'compare', 'addsub', 'shapes2d', 'pattern',
   'letters', 'sounds', 'rhyme', 'flags', 'address', 'compass', 'living', 'motion'];
-const CHECK_SKIP = ['ten', 'draw', 'memory', 'dots', 'lines', 'maze', 'simon', 'robot', 'blocks'];                       // games that cannot be scored as one question
+const CHECK_SKIP = ['ten', 'draw', 'memory', 'dots', 'lines', 'maze', 'simon', 'robot', 'blocks', 'blockpuzzle'];                       // games that cannot be scored as one question
 const gameById = (id) => GAMES.find(g => g.id === id);
 
 // ---- check history ----

@@ -15,12 +15,12 @@ registerGame({
     const keys = lv === 1 ? ['dot', 'domino', 'i3', 'l3', 'o', 'domino', 'i3'] : Object.keys(BLOCK_SHAPES);
     const ask = B(`Fill a whole row to clear it! Clear ${goal} rows.`, `가로 한 줄을 가득 채우면 사라져요! ${goal}줄을 없애요.`);
     view().innerHTML = `<div class="prompt">${L(ask)}<button class="say" id="sp">🔊</button></div>
-      <div class="bstat" id="bstat"></div>
+      <div class="bstatrow"><div class="bstat" id="bstat"></div><div class="bnextbox"><span>${L(B("Next", "다음"))}</span><div class="bnext" id="bnext"></div></div></div>
       <div class="bboard" id="bb" style="--w:${W}"></div>
       <div class="bctl"><button class="pill" id="bl">◀</button><button class="pill" id="br2">↻</button><button class="pill" id="bd">⬇</button><button class="pill" id="bn">▶</button></div>
       <pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
-    const board = Array.from({ length: H }, () => Array(W).fill(null)); let cur = null, rows = 0, solved = false, missed = false, timer = null;
+    const board = Array.from({ length: H }, () => Array(W).fill(null)); let nextK = pick(keys), cur = null, rows = 0, solved = false, missed = false, timer = null;
     const boardEl = $('#bb');
     const collide = (cells, x, y) => cells.some(([cx, cy]) => { const bx = x + cx, by = y + cy; return bx < 0 || bx >= W || by >= H || (by >= 0 && board[by][bx]); });
     const dropY = () => { let y = cur.y; while (!collide(cur.cells, cur.x, y + 1)) y++; return y; };
@@ -32,9 +32,11 @@ registerGame({
       const live = new Set(); if (cur) cur.cells.forEach(([cx, cy]) => live.add((cur.y + cy) * W + cur.x + cx));
       boardEl.innerHTML = g.map((r, y) => r.map((c, x) => { const i = y * W + x; return live.has(i) ? `<div class="bc f" style="background:${cur.col}"></div>` : c ? `<div class="bc f" style="background:${c}"></div>` : ghost.has(i) ? `<div class="bc g"></div>` : '<div class="bc"></div>'; }).join('')).join('');
       $('#bstat').textContent = `🧱 ${rows}/${goal}`;
+      const nc = BLOCK_SHAPES[nextK].c, nw = Math.max(...nc.map(p => p[0])) + 1, nh = Math.max(...nc.map(p => p[1])) + 1, nb = $('#bnext');
+      if (nb) { nb.style.setProperty('--pw', nw); nb.innerHTML = Array.from({ length: nw * nh }, (_, i) => nc.some(p => p[0] === i % nw && p[1] === Math.floor(i / nw)) ? `<i style="background:${BLOCK_SHAPES[nextK].col}"></i>` : '<b></b>').join(''); }
     };
     const spawn = () => {
-      const k = pick(keys), cells = BLOCK_SHAPES[k].c.map(p => p.slice()), w = Math.max(...cells.map(p => p[0])) + 1;
+      const k = nextK; nextK = pick(keys); const cells = BLOCK_SHAPES[k].c.map(p => p.slice()), w = Math.max(...cells.map(p => p[0])) + 1;
       cur = { cells, x: Math.floor((W - w) / 2), y: 0, col: BLOCK_SHAPES[k].col };
       if (collide(cur.cells, cur.x, cur.y)) {                       // too high: friendly reset, keep playing
         if (!missed) { missed = true; record('blocks', false); }
@@ -46,6 +48,7 @@ registerGame({
       let cleared = 0; for (let y = H - 1; y >= 0; y--) if (board[y].every(Boolean)) { board.splice(y, 1); board.unshift(Array(W).fill(null)); cleared++; y++; }
       if (cleared) { rows += cleared; tone(660, 140); tone(880, 200, 0.1); }
       else tone(220, 60, 0, 'triangle', 0.08);
+      if (cleared) confetti(16);
       if (rows >= goal) { solved = true; clearInterval(timer); draw(); record('blocks', !missed); if (!missed) addPeach(); $('#cheer').textContent = pick(T().right); nextButton(() => this.play()); return; }
       spawn(); draw();
     };
