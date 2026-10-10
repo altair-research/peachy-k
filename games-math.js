@@ -34,29 +34,31 @@ registerGame({
   }
 });
 
-// ---------- 2. Make ten (number bonds to 10) ----------
-const frameHtml = (n, e) => `<div class="frame big10">${Array.from({ length: 10 }, (_, i) => i < n ? `<div class="cell on">${e}</div>` : `<div class="cell empty"></div>`).join('')}</div>`;
+// ---------- 2. Make a number (number bonds: parts that make 5..10) ----------
+const frameHtml = (n, e, T) => `<div class="frame big10">${Array.from({ length: T }, (_, i) => i < n ? `<div class="cell on">${e}</div>` : `<div class="cell empty"></div>`).join('')}</div>`;
 registerGame({
-  id: 'ten', subject: 'math', icon: '🍎', title: B('Make Ten', '10 만들기'), sub: B('How many more to make 10?', '10이 되려면 몇 개 더?'),
+  id: 'ten', subject: 'math', icon: '🍎', title: B('Make a Number', '수 만들기'), sub: B('How many more to make it?', '몇 개 더 필요할까?'),
   area: AREA_MATH('Within 10'),
   play() {
     const lv = lvl('ten'), e = pick(['🍑', '🍎', '🍓', '🍊', '⭐']), mode = lv === 1 ? 'more' : pick(['more', 'pair', 'missing', 'more']);
+    const T = pick(lv === 1 ? [10, 10, 5, 6, 7, 8, 9] : [10, 10, 5, 6, 7, 8, 9]), word = (x) => (x === 10 && S.lang === 'ko' ? '십' : x);
+    const koPair = (a, b) => `${a}와 ${b}를 합치면 ${word(T)}!`;
     if (mode === 'pair') {
-      const a = 1 + rnd(9), good = [a, 10 - a], bad = [];
-      while (bad.length < 2) { const y = Math.max(0, Math.min(10, 10 - a + pick([-3, -2, -1, 1, 2, 3]))); if (a + y !== 10 && !bad.some(b => b[1] === y)) bad.push([a, y]); }
+      const a = 1 + rnd(T - 1), bad = [];
+      let guard = 0; while (bad.length < 2 && guard++ < 60) { const y = Math.max(0, Math.min(T, T - a + pick([-3, -2, -1, 1, 2, 3]))); if (a + y !== T && !bad.some(b => b[1] === y)) bad.push([a, y]); }
       const o = (p, ok) => ({ html: `<span class="num eq">${p[0]} + ${p[1]}</span>`, ok });
-      quiz(this, { ask: B('Which pair makes 10?', '더해서 10이 되는 짝은?'), opts: [o(good, true), ...bad.map(p => o(p, false))], cls: 'words', after: B(`${a} and ${10 - a} make ten!`, `${a}와 ${10 - a}를 합치면 십!`) });
+      quiz(this, { ask: B(`Which pair makes ${T}?`, `더해서 ${T}이(가) 되는 짝은?`), opts: [o([a, T - a], true), ...bad.map(p => o(p, false))], cls: 'words', after: B(`${a} and ${T - a} make ${T}!`, koPair(a, T - a)) });
       return;
     }
-    const n = lv === 1 ? 5 + rnd(5) : 1 + rnd(9), ans = 10 - n, after = B(`${n} and ${ans} make ten!`, `${n}와 ${ans}를 합치면 십!`);
+    const n = lv === 1 ? Math.max(1, T - 5) + rnd(Math.min(5, T - 1)) : 1 + rnd(T - 1), ans = T - n, after = B(`${n} and ${ans} make ${T}!`, koPair(n, ans));
     const fill = () => $$('.show .cell:not(.on)').forEach(c => { c.classList.add('on', 'new'); c.textContent = e; });
     if (mode === 'missing') {
-      quiz(this, { ask: B('What number makes 10?', '10이 되려면 어떤 수가 필요할까요?'), show: `<div class="bigword eqline"><span class="qbox">?</span> + ${n} = 10</div>`, opts: numOpts(ans, 0, 10), after });
+      quiz(this, { ask: B(`What number makes ${T}?`, `${T}이(가) 되려면 어떤 수가 필요할까요?`), show: `<div class="bigword eqline"><span class="qbox">?</span> + ${n} = ${T}</div>`, opts: numOpts(ans, 0, T), after });
       return;
     }
     quiz(this, {
-      ask: B(`There are ${n}. How many more to make 10?`, `${n}개 있어요. 10이 되려면 몇 개 더 필요할까요?`), show: frameHtml(n, e),
-      opts: numOpts(ans, 0, 9), after, onCorrect: fill
+      ask: B(`There are ${n}. How many more to make ${T}?`, `${n}개 있어요. ${T}이(가) 되려면 몇 개 더 필요할까요?`), show: frameHtml(n, e, T),
+      opts: numOpts(ans, 0, T - 1), after, onCorrect: fill
     });
   }
 });
