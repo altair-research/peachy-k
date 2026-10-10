@@ -104,7 +104,7 @@ function dup(game, key) {
   game._tries = 0; r.push(key); if (r.length > 5) r.shift(); return false;
 }
 function launch(game, mix) {
-  Object.assign(SESSION, { id: game.id, n: 0, mix: !!mix, done: 0, rounds: mix ? 3 : ROUNDS });
+  Object.assign(SESSION, { id: game.id, n: 0, mix: !!mix, done: 0, rounds: mix ? Math.min(3, game.rounds || 3) : (game.rounds || ROUNDS) });
   updateBar(); game.play();
 }
 function surprise() {                                // mixed run: different game every couple of rounds

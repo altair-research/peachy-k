@@ -188,3 +188,12 @@ pk-cheer .peachy.oops{animation:shake .4s}
 .rprog em{font-size:15px;color:#8a7a7a;font-style:normal}
 .rkeys{display:flex;gap:8px;justify-content:center;margin:6px 0}
 .rkeys .pill{font-size:28px;min-width:62px;min-height:56px}
+
+/* block drop */
+.bstat{font-size:22px;font-weight:800;margin:2px 0}
+.bboard{--cs:clamp(30px,9vw,42px);display:grid;grid-template-columns:repeat(var(--w),var(--cs));gap:2px;background:#cfe3f5;padding:5px;border-radius:14px;touch-action:none;margin:6px auto;width:max-content;box-shadow:0 5px 0 #0002;user-select:none}
+.bc{width:var(--cs);height:var(--cs);border-radius:7px;background:#eaf3fb;box-sizing:border-box}
+.bc.f{box-shadow:inset 0 -5px 0 #0003,inset 0 3px 0 #fff5}
+.bc.g{background:transparent;border:2.5px dashed #7aa7d1}
+.bctl{display:flex;gap:10px;justify-content:center;margin:8px 0}
+.bctl .pill{min-width:clamp(60px,18vw,84px);min-height:64px;font-size:30px;padding:0}
