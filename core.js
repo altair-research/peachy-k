@@ -74,17 +74,24 @@ function sessionEnd(game) {
   $('#again').onclick = () => launch(game); $('#mixbtn').onclick = surprise; $('#goHome').onclick = home;
   say(t.roundDone);
 }
-function nextButton(fn) {
+let NEXT_TOK = 0;
+// Shows a "Next" button and moves on by itself after a short pause (tap to go sooner).
+function nextButton(fn, opts = {}) {
+  const tok = ++NEXT_TOK;
   setTimeout(() => {
-    const c = $('#cheer'); if (!c) return;
-    c.insertAdjacentHTML('afterend', `<button class="next" id="nx">${T().next}</button>`);
-    $('#nx').onclick = () => {
-      SESSION.n++;
+    const cheer = $('#cheer'); if (!cheer || tok !== NEXT_TOK) return;
+    cheer.insertAdjacentHTML('afterend', `<button class="next" id="nx">${T().next}</button>`);
+    const btn = $('#nx');
+    const go = () => {
+      if (tok !== NEXT_TOK || !document.body.contains(btn)) return;
+      NEXT_TOK++; SESSION.n++;
       const g = GAMES.find(x => x.id === SESSION.id);
       if (!g || SESSION.n < SESSION.rounds) return fn();
       return SESSION.mix ? surprise() : sessionEnd(g);
     };
-  }, 900);
+    btn.onclick = go;
+    if (opts.auto !== false && !DIAG.active) { const f = $('#fact'); setTimeout(go, opts.auto || Math.min(4200, 1300 + 45 * (f ? f.textContent.length : 0))); }
+  }, 450);
 }
 
 // Generic multiple-choice round.
@@ -96,7 +103,7 @@ function quiz(game, item) {
   const opts = shuffle(item.opts);
   view().innerHTML = `
     <div class="prompt">${askText}<button class="say" id="sp" aria-label="${T().listen}">🔊</button></div>
-    <div class="show">${item.show || ''}</div>
+    ${item.show ? `<div class="show">${item.show}</div>` : ''}
     <div class="opts ${item.cls || ''}">${opts.map((o, i) => `<button class="opt" data-i="${i}">${o.html}${o.label ? `<span class="ol">${labelText(o.label)}</span>` : ''}</button>`).join('')}</div>
     <div class="cheer" id="cheer"></div><div class="fact" id="fact"></div>`;
   const ask = () => { say(item.askSay ? L(item.askSay) : askText); if (item.askExtra) say(item.askExtra.t, item.askExtra.lang, true); };

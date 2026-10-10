@@ -159,7 +159,7 @@ registerGame({
     $('#done').onclick = () => {
       record('draw', true); addPeach(); $('#done').disabled = true;
       $('#cheer').textContent = T().tellAbout; say(T().tellAbout);
-      nextButton(() => this.play());
+      nextButton(() => this.play(), { auto: false });
     };
   }
 });

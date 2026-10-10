@@ -114,3 +114,29 @@ h2{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pad{aspect-ratio:1.2;border-radius:24px;box-shadow:0 6px 0 #0003;opacity:.78}
 .pad.lit{opacity:1;filter:brightness(1.35);transform:scale(.97);box-shadow:0 0 0 6px #fff8}
 .opts.five .opt,.opts.four .opt{padding:4px}
+
+/* game screens: question on top, picture centered, answers within thumb reach */
+#view:has(> .prompt){display:flex;flex-direction:column;min-height:calc(100dvh - 72px)}
+#view:has(> .prompt) > .show{margin:auto 0;padding:6px 0}
+#view:has(> .prompt) > .frame,#view:has(> .prompt) > .dotsvg,#view:has(> .prompt) > .maze,#view:has(> .prompt) > .canvaswrap,#view:has(> .prompt) > .mem,#view:has(> .prompt) > .pads,#view:has(> .prompt) > .scatter{margin-top:auto;margin-bottom:auto}
+#view:has(> .prompt) > .opts{margin-top:0;margin-bottom:6px}
+#view:has(> .prompt) > .opts.tiles{margin-top:8px}
+#view:has(> .prompt) > .cheer{margin-top:4px}
+.frame.big10{max-width:min(380px,88vw);margin:0 auto;gap:8px}
+.frame.big10 .cell{font-size:clamp(28px,9vw,44px)}
+.cell.new{background:#d6f5e3;border:3px solid var(--good);animation:pop .35s}
+@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.eqline{font-size:clamp(40px,12vw,64px)}
+.qbox{display:inline-block;min-width:1.2em;border:4px dashed var(--peach);border-radius:14px;padding:0 10px}
+.num.eq{font-size:clamp(30px,9vw,44px);white-space:nowrap}
+
+.linesvg~div .pill{min-height:52px;min-width:96px;touch-action:manipulation}
+
+/* no picture above the answers: center the answers instead of leaving a gap */
+#view:has(> .prompt):not(:has(> .show)) > .opts{margin-top:auto;margin-bottom:auto}
+#view:has(> .prompt):not(:has(> .show)) > .opts .opt{min-height:clamp(120px,22vh,200px)}
+#view:has(> .prompt):not(:has(> .show)) > .opts .emo{font-size:clamp(48px,15vw,84px)}
+#view:has(> .prompt):not(:has(> .show)) > .opts.groups .opt{min-height:clamp(150px,26vh,240px)}
+.show .emo{font-size:clamp(72px,24vw,120px);line-height:1}
+.show .bigword .emo{font-size:clamp(56px,18vw,90px)}
+#view:has(> .prompt):not(:has(> .show)) > .opts .grp,#view:has(> .prompt):not(:has(> .show)) > .opts .grp.sm{font-size:clamp(30px,9.5vw,46px)}

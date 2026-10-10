@@ -34,30 +34,30 @@ registerGame({
   }
 });
 
-// ---------- 2. Make ten (tap-to-fill ten-frame) ----------
+// ---------- 2. Make ten (number bonds to 10) ----------
+const frameHtml = (n, e) => `<div class="frame big10">${Array.from({ length: 10 }, (_, i) => i < n ? `<div class="cell on">${e}</div>` : `<div class="cell empty"></div>`).join('')}</div>`;
 registerGame({
-  id: 'ten', subject: 'math', icon: '🍎', title: B('Make Ten', '10 만들기'), sub: B('Fill the box to 10', '칸을 10개로 채워요'),
+  id: 'ten', subject: 'math', icon: '🍎', title: B('Make Ten', '10 만들기'), sub: B('How many more to make 10?', '10이 되려면 몇 개 더?'),
   area: AREA_MATH('Within 10'),
   play() {
-    const lv = lvl('ten'), start = lv === 1 ? 5 + rnd(4) : 1 + rnd(8), e = pick(['🍑', '🍎', '🍓', '🍊', '⭐']);
-    if (dup(this, 'ten' + start)) return this.play();
-    let filled = start;
-    const draw = () => {
-      view().innerHTML = `
-        <div class="prompt">${T().fillAsk}<button class="say" id="sp">🔊</button></div>
-        <div class="frame">${Array.from({ length: 10 }, (_, i) => i < filled ? `<div class="cell on">${e}</div>` : `<div class="cell empty"></div>`).join('')}</div>
-        <div class="cheer" id="cheer"></div>`;
-      $('#sp').onclick = () => say(T().fillAsk);
-      $$('.cell.empty').forEach(c => c.onclick = () => {
-        filled++; draw();
-        if (filled < 10) { say(String(filled)); return; }
-        record('ten', true); addPeach();
-        $('#cheer').textContent = T().pair(start, 10 - start) + ' ' + pick(T().right);
-        say(T().pair(start, 10 - start));
-        nextButton(() => this.play());
-      });
-    };
-    draw(); say(T().fillAsk);
+    const lv = lvl('ten'), e = pick(['🍑', '🍎', '🍓', '🍊', '⭐']), mode = lv === 1 ? 'more' : pick(['more', 'pair', 'missing', 'more']);
+    if (mode === 'pair') {
+      const a = 1 + rnd(9), good = [a, 10 - a], bad = [];
+      while (bad.length < 2) { const y = Math.max(0, Math.min(10, 10 - a + pick([-3, -2, -1, 1, 2, 3]))); if (a + y !== 10 && !bad.some(b => b[1] === y)) bad.push([a, y]); }
+      const o = (p, ok) => ({ html: `<span class="num eq">${p[0]} + ${p[1]}</span>`, ok });
+      quiz(this, { ask: B('Which pair makes 10?', '더해서 10이 되는 짝은?'), opts: [o(good, true), ...bad.map(p => o(p, false))], cls: 'words', after: B(`${a} and ${10 - a} make ten!`, `${a}와 ${10 - a}를 합치면 십!`) });
+      return;
+    }
+    const n = lv === 1 ? 5 + rnd(5) : 1 + rnd(9), ans = 10 - n, after = B(`${n} and ${ans} make ten!`, `${n}와 ${ans}를 합치면 십!`);
+    const fill = () => $$('.show .cell:not(.on)').forEach(c => { c.classList.add('on', 'new'); c.textContent = e; });
+    if (mode === 'missing') {
+      quiz(this, { ask: B('What number makes 10?', '10이 되려면 어떤 수가 필요할까요?'), show: `<div class="bigword eqline"><span class="qbox">?</span> + ${n} = 10</div>`, opts: numOpts(ans, 0, 10), after });
+      return;
+    }
+    quiz(this, {
+      ask: B(`There are ${n}. How many more to make 10?`, `${n}개 있어요. 10이 되려면 몇 개 더 필요할까요?`), show: frameHtml(n, e),
+      opts: numOpts(ans, 0, 9), after, onCorrect: fill
+    });
   }
 });
 

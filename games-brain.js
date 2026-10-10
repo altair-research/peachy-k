@@ -85,8 +85,12 @@ registerGame({
       if (Math.hypot(end[0] - start[0], end[1] - start[1]) > 4) { lines.push([start, end]); redraw(); $('#cheer').textContent = ''; check(); }
       start = null;
     };
-    $('#undo').onclick = () => { if (solved) return; lines.pop(); redraw(); $('#cheer').textContent = ''; };
-    $('#clr').onclick = () => { if (solved) return; lines.length = 0; redraw(); $('#cheer').textContent = ''; };
+    const hidePrev = () => { const pv = $('#prev'); ['x1', 'y1', 'x2', 'y2'].forEach(k => pv.setAttribute(k, 0)); start = null; };
+    svg.onpointercancel = hidePrev; svg.onlostpointercapture = () => { if (start) hidePrev(); };      // touch gestures can be cancelled mid-drag
+    const clearHint = () => { $('#hintg').innerHTML = ''; };
+    const undo = () => { if (solved) return; hidePrev(); if (lines.length) lines.pop(); else clearHint(); redraw(); $('#cheer').textContent = ''; };
+    const clear = () => { if (solved) return; hidePrev(); lines.length = 0; clearHint(); redraw(); $('#cheer').textContent = ''; };
+    ['undo', 'clr'].forEach(id => { const b = $('#' + id), f = id === 'undo' ? undo : clear; b.onclick = f; b.onpointerdown = (e) => e.stopPropagation(); });
     $('#hint').onclick = () => { if (solved) return; hinted = true; $('#hintg').innerHTML = P.sol.map(s => { const a = toXY([s[0], s[1]]), b = toXY([s[2], s[3]]); return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#06d6a0" stroke-width="2.6" stroke-dasharray="4 3" stroke-linecap="round" opacity=".7"/>`; }).join(''); };
     window.__lines = { svg, D, P, toXY };
   }
