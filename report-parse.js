@@ -39,6 +39,7 @@ const SKILL_RULES = [
   ['ss', /flag|symbol/i, ['flags', 'gasymbols']],
   ['ss', /address|where i live|home/i, ['address']],
   ['ss', /holiday|thanksgiving|veteran|columbus|president|memorial/i, ['holidays']],
+  ['ss', /money|coin|cents|income|earn|goods|services|spend|save/i, ['coins']],
   ['ss', /citizen|rules|character/i, ['citizen']],
   ['ss', /map|globe|direction/i, ['compass']],
   ['ss', /unit 1 assessment|our nation/i, ['flags', 'address', 'gasymbols', 'citizen']],

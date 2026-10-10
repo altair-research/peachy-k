@@ -6,7 +6,7 @@ const I18N = {
     speech: 'en-US', switchTo: '한국어',
     app: 'Peachy K', tagline: 'Georgia Kindergarten Games',
     pick: 'Pick a game!',
-    subjects: { math: 'Math', read: 'Reading', write: 'Writing', brain: 'Brain Games', ss: 'Georgia & Our Nation', sci: 'Science' },
+    subjects: { math: 'Math', read: 'Reading', write: 'Writing', life: 'Me & My Day', brain: 'Brain Games', ss: 'Georgia & Our Nation', sci: 'Science' },
     right: ['Great job!', 'Awesome!', 'You did it!', 'Super!', 'Peachy!'],
     again: 'Try again!', next: 'Next ▶', listen: 'Listen',
     grownups: 'For grown-ups', back: 'Back',
@@ -34,6 +34,7 @@ const I18N = {
     picks: "Peachy's picks", findStart: 'Find my starting games',
     roundDone: 'Round complete!', gotRight: (a, b) => `You got ${a} of ${b} on the first try!`, playAgain: 'Play again', surprise: 'Surprise me!', pickAnother: 'Pick another game',
     checkBtn: 'Check-up', scopeAll: 'Full check-up', checkDone: 'Check-up done!', lastTime: (a, b) => `Last time: ${a}/${b}`, better: 'Better!', improved: 'Got better at', practiceThese: 'Practice these', allRight: 'All right! Great job!', progressTitle: 'Check-ups', colDate: 'Date', colScore: 'Score',
+    run: 'Run', addArrows: 'Tap the arrows to make a program', heroHi: "Hi! I'm Peachy!", stickers: 'My Stickers', stickersTitle: 'My Sticker Book', newSticker: 'New sticker!', stickerHint: 'Finish a round to win a sticker!',
     undo: 'Undo', hint: 'Hint', tooMany: 'Too many lines! Undo and try a different way.', watch: 'Watch the colors!', yourTurn: 'Your turn!', replay: 'Watch again',
     clear: 'Clear', done: 'Done', tellAbout: 'Now tell a grown-up about your drawing!'
   },
@@ -41,7 +42,7 @@ const I18N = {
     speech: 'ko-KR', switchTo: 'English',
     app: '피치 K', tagline: '조지아 유치원(K) 학습 게임',
     pick: '게임을 골라요!',
-    subjects: { math: '수학', read: '읽기', write: '쓰기', brain: '두뇌 게임', ss: '조지아와 우리나라', sci: '과학' },
+    subjects: { math: '수학', read: '읽기', write: '쓰기', life: '나와 하루', brain: '두뇌 게임', ss: '조지아와 우리나라', sci: '과학' },
     right: ['잘했어요!', '멋져요!', '해냈어요!', '최고예요!', '피치 좋아요!'],
     again: '다시 해 봐요!', next: '다음 ▶', listen: '듣기',
     grownups: '보호자용', back: '뒤로',
@@ -69,6 +70,7 @@ const I18N = {
     picks: '피치의 추천', findStart: '시작 게임 찾기',
     roundDone: '한 판 끝!', gotRight: (a, b) => `${b}문제 중 ${a}문제를 한 번에 맞혔어요!`, playAgain: '또 하기', surprise: '아무거나 놀기!', pickAnother: '다른 게임 고르기',
     checkBtn: '점검', scopeAll: '전체 점검', checkDone: '점검 끝!', lastTime: (a, b) => `지난번: ${a}/${b}`, better: '더 좋아졌어요!', improved: '좋아진 게임', practiceThese: '더 연습할 게임', allRight: '모두 맞았어요! 최고예요!', progressTitle: '점검 기록', colDate: '날짜', colScore: '점수',
+    run: '실행', addArrows: '화살표를 눌러 길을 만들어요', heroHi: '안녕! 나는 피치야!', stickers: '내 스티커', stickersTitle: '내 스티커북', newSticker: '새 스티커!', stickerHint: '한 판을 끝내면 스티커를 받아요!',
     undo: '되돌리기', hint: '힌트', tooMany: '선이 너무 많아요! 되돌려서 다른 방법을 찾아봐요.', watch: '색깔을 잘 보세요!', yourTurn: '이제 네 차례!', replay: '다시 보기',
     clear: '지우기', done: '다 했어요', tellAbout: '이제 어른에게 그림 이야기를 들려줘요!'
   }

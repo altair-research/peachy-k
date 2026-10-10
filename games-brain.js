@@ -25,7 +25,7 @@ registerGame({
     view().innerHTML = `<div class="prompt">${L(ask)}<button class="say" id="sp">🔊</button></div>
       <svg id="dsvg" class="dotsvg" viewBox="0 0 100 100"><polygon id="dfill" points="" fill="#ffd166" fill-opacity="0"/><polyline id="dline" points="" fill="none" stroke="#ef476f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       ${sh.pts.map((p, i) => `<g class="dg" data-i="${i}"><circle cx="${p[0]}" cy="${p[1]}" r="4.6" class="dc"/><text x="${p[0]}" y="${p[1] + 1.9}" class="dt">${i + 1}</text><circle cx="${p[0]}" cy="${p[1]}" r="8" fill="transparent"/></g>`).join('')}</svg>
-      <div class="cheer" id="cheer"></div>`;
+      <pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
     let next = 0, missed = false, pts = [];
     $$('.dg').forEach(g => g.onclick = () => {
@@ -64,7 +64,7 @@ registerGame({
       ${D.map(d => `<circle cx="${d[0]}" cy="${d[1]}" r="3.4" class="ldot"/>`).join('')}</svg>
       <div class="lcount" id="lc">✏️ 0/${P.limit}</div>
       <div><button class="pill" id="undo">↩ ${T().undo}</button> <button class="pill" id="clr">🗑 ${T().clear}</button> <button class="pill" id="hint">💡 ${T().hint}</button></div>
-      <div class="cheer" id="cheer"></div>`;
+      <pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
     const svg = $('#lsvg'), lines = []; let start = null, hinted = false, failed = false, solved = false;
     const pt = (e) => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse()); return [q.x, q.y]; };
@@ -115,7 +115,7 @@ registerGame({
     view().innerHTML = `<div class="prompt">${L(ask)}<button class="say" id="sp">🔊</button></div>
       <div class="maze" id="mz" style="--n:${n}">${m.map((row, r) => row.map((c, k) => `<div class="mc2 ${c.t ? 'wt' : ''} ${c.r ? 'wr' : ''} ${c.b ? 'wb' : ''} ${c.l ? 'wl' : ''}" data-r="${r}" data-c="${k}"></div>`).join('')).join('')}</div>
       <div class="dpad"><button class="pill" data-d="u">⬆️</button><div><button class="pill" data-d="l">⬅️</button><button class="pill" data-d="d">⬇️</button><button class="pill" data-d="r">➡️</button></div></div>
-      <div class="cheer" id="cheer"></div>`;
+      <pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
     const cell = (r, k) => document.querySelector(`.mc2[data-r="${r}"][data-c="${k}"]`);
     let pr = 0, pc = 0, done = false, moves = 0;
@@ -171,14 +171,7 @@ registerGame({
 
 // ---------- 6. Copy the colors (Simon) ----------
 const PADS = [['#ef476f', 262], ['#118ab2', 330], ['#06d6a0', 392], ['#ffd166', 523]];
-let audioCtx = null, simonTok = 0;
-function beep(freq, ms = 280) {
-  try {
-    if (S.muted) return; audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.value = freq; o.type = 'sine'; g.gain.value = 0.15;
-    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + ms / 1000);
-  } catch (e) {}
-}
+let simonTok = 0;
 registerGame({
   id: 'simon', subject: 'brain', icon: '🎹', title: B('Copy the Colors', '색깔 따라 하기'), sub: B('Watch, then repeat', '보고 똑같이 눌러요'),
   area: AREA_BRAIN('Memory'),
@@ -186,7 +179,7 @@ registerGame({
     const len = lvl('simon') === 1 ? 3 : 4 + rnd(2), seq = Array.from({ length: len }, () => rnd(4)), tok = ++simonTok, sleep = (ms) => new Promise(r => setTimeout(r, ms));
     view().innerHTML = `<div class="prompt" id="st">${T().watch}</div>
       <div class="pads">${PADS.map((p, i) => `<button class="pad" data-i="${i}" style="background:${p[0]}" aria-label="color ${i + 1}"></button>`).join('')}</div>
-      <div><button class="pill" id="rep">👂 ${T().replay}</button></div><div class="cheer" id="cheer"></div>`;
+      <div><button class="pill" id="rep">👂 ${T().replay}</button></div><pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     const pads = $$('.pad'), flash = async (i) => { pads[i].classList.add('lit'); beep(PADS[i][1]); await sleep(420); pads[i].classList.remove('lit'); await sleep(160); };
     let step = 0, missed = false, busy = true, solved = false;
     const playSeq = async () => { busy = true; $('#st').textContent = T().watch; await sleep(500); for (const i of seq) { if (tok !== simonTok) return; await flash(i); } if (tok !== simonTok) return; $('#st').textContent = T().yourTurn; say(T().yourTurn); busy = false; step = 0; };

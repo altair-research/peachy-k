@@ -61,7 +61,7 @@ registerGame({
     const pairs = lvl('memory') === 1 ? 4 : 6, ls = shuffle('ABCDEFGHIJKLMNOP'.split('')).slice(0, pairs);
     const cards = shuffle(ls.flatMap(c => [{ k: c, t: c }, { k: c, t: c.toLowerCase() }]));
     view().innerHTML = `<div class="prompt">${S.lang === 'ko' ? '짝이 되는 큰 글자와 작은 글자를 찾아요!' : 'Find the big and little letter pairs!'}</div>
-      <div class="mem">${cards.map((c, i) => `<button class="card" data-i="${i}"><span class="back">🍑</span><span class="face">${c.t}</span></button>`).join('')}</div><div class="cheer" id="cheer"></div>`;
+      <div class="mem">${cards.map((c, i) => `<button class="card" data-i="${i}"><span class="back">🍑</span><span class="face">${c.t}</span></button>`).join('')}</div><pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     let open = [], lock = false, misses = 0, matched = 0;
     const finish = () => { const ok = misses <= pairs; record('memory', ok); if (ok) addPeach(); $('#cheer').textContent = pick(T().right); nextButton(() => this.play()); };
     $$('.card').forEach(b => b.onclick = () => {

@@ -1,16 +1,17 @@
 'use strict';
 // App shell: home menu grouped by school subject, grown-ups panel, language switch.
-const SUBJECT_ORDER = ['math', 'read', 'write', 'ss', 'sci', 'brain'];
-const SUBJECT_ICON = { math: '🔢', read: '📖', write: '✏️', ss: '🍑', sci: '🔬', brain: '🧠' };
+const SUBJECT_ORDER = ['math', 'read', 'write', 'ss', 'sci', 'life', 'brain'];
+const SUBJECT_ICON = { math: '🔢', read: '📖', write: '✏️', ss: '🍑', sci: '🔬', life: '🌈', brain: '🧠' };
 GAMES.forEach(g => { g.play = g.play.bind(g); });
 
 function home() {
   $('#langBtn').textContent = T().switchTo;
   document.documentElement.lang = S.lang;
   view().innerHTML = `
-    <h1>🍑 ${T().app}</h1>
+    <div class="hero">${PEACH_SVG('happy')}<div class="bubble">${T().heroHi}</div></div>
+    <h1>${T().app}</h1>
     <div class="tag">${T().tagline}</div>
-    <button class="big surprise" id="surprise"><span class="gi">🎲</span>${T().surprise}</button>
+    <div class="toprow"><button class="big surprise" id="surprise"><span class="gi">🎲</span>${T().surprise}</button><button class="big surprise" id="stickers"><span class="gi">🏆</span>${T().stickers} ${S.stickers.length}/${ALL_STICKERS.length}</button></div>
     ${picksHtml()}
     ${SUBJECT_ORDER.map(sub => `
       <section class="subj ${sub}"><h2><span>${SUBJECT_ICON[sub]} ${T().subjects[sub]}</span>${sub === 'brain' ? '' : `<button class="chk" data-sub="${sub}">📋 ${T().checkBtn}</button>`}</h2>
@@ -22,8 +23,15 @@ function home() {
   $$('.big').forEach(b => b.onclick = () => launch(GAMES.find(g => g.id === b.dataset.id)));
   $('#parent').onclick = grownups; $('#find').onclick = intro;
   $$('.pick').forEach(b => b.onclick = () => launch(gameById(b.dataset.id)));
-  $('#surprise').onclick = surprise;
+  $('#surprise').onclick = surprise; $('#stickers').onclick = stickerBook;
   $$('.chk').forEach(b => b.onclick = () => startDiag(b.dataset.sub));
+}
+
+function stickerBook() {
+  view().innerHTML = `<h1>🏆 ${T().stickersTitle}</h1><p class="tag">${T().stickerHint}</p>
+    <div class="stickergrid">${ALL_STICKERS.map(s => S.stickers.includes(s) ? `<div class="stk got">${s}</div>` : `<div class="stk lock">🔒</div>`).join('')}</div>
+    <div><button class="next" id="b">${T().back}</button></div>`;
+  $('#b').onclick = home;
 }
 
 function picksHtml() {

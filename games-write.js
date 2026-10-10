@@ -11,7 +11,7 @@ function tileRound(game, cfg) {
     <div class="show">${cfg.show || ''}</div>
     <div class="slots">${cfg.target.map(() => '<div class="slot"></div>').join('')}</div>
     <div class="opts tiles">${tokens.map((t, i) => `<button class="opt tile" data-i="${i}">${t}</button>`).join('')}</div>
-    <div class="cheer" id="cheer"></div><div class="fact" id="fact"></div>`;
+    <pk-cheer class="cheer" id="cheer"></pk-cheer><div class="fact" id="fact"></div>`;
   const ask = () => say(L(cfg.askSay || cfg.ask));
   $('#sp').onclick = ask; ask();
   let pos = 0, missed = false;
@@ -110,7 +110,7 @@ registerGame({
     const color = '#ef476f', bw = 16;
     const ask = B(`Trace the ${mode === 'num' ? 'number' : 'letter'} ${ch}. Use your finger!`, `${ch} ${mode === 'num' ? '숫자' : '글자'}를 손가락으로 따라 써요!`);
     view().innerHTML = `<div class="prompt">${L(ask)}<button class="say" id="sp">🔊</button></div><div class="canvaswrap" id="cw"></div>
-      <div><button class="pill" id="clr">${T().clear}</button></div><div class="cheer" id="cheer"></div>`;
+      <div><button class="pill" id="clr">${T().clear}</button></div><pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#cw').appendChild(disp.c);
     $('#sp').onclick = () => say(L(ask)); say(L(ask));
     if (DIAG.active) DIAG.decorate(this);
@@ -149,7 +149,7 @@ registerGame({
     view().innerHTML = `<div class="prompt">${L(pr)}<button class="say" id="sp">🔊</button></div><div class="canvaswrap" id="cw"></div>
       <div class="palette">${colors.map((c, i) => `<button class="sw ${i === 0 ? 'sel' : ''}" data-c="${c}" style="background:${c}" aria-label="color"></button>`).join('')}
       <button class="sw sz" data-s="5">·</button><button class="sw sz" data-s="12">●</button><button class="sw sz" data-s="22">⬤</button></div>
-      <div><button class="pill" id="clr">${T().clear}</button> <button class="next" id="done">${T().done}</button></div><div class="cheer" id="cheer"></div>`;
+      <div><button class="pill" id="clr">${T().clear}</button> <button class="next" id="done">${T().done}</button></div><pk-cheer class="cheer" id="cheer"></pk-cheer>`;
     $('#cw').appendChild(cv.c);
     $('#sp').onclick = () => say(L(pr)); say(L(pr));
     $$('.sw[data-c]').forEach(b => b.onclick = () => { color = b.dataset.c; $$('.sw[data-c]').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); });
